@@ -11,17 +11,6 @@ import utils from './utils'
 import 'iview/dist/styles/iview.css'
 import commonComponents from './components/common'
 
-router.beforeEach((to, from, next) => {
-  if (to.meta.auth_login) {
-    const { username, token } = store.getters['system/user']
-    if (!(username && token))  {
-      return next('/login')
-    }
-    return next()
-  }
-  return next()
-})
-
 Vue.use(VueCookie)
 Vue.use(iview)
 Vue.use(commonComponents)

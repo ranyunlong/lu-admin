@@ -3,10 +3,10 @@ import Vuex from 'vuex'
 import system from './system'
 
 Vue.use(Vuex)
-export default new Vuex.Store({
+const store = new Vuex.Store({
     modules: {
         system
     }
 })
 
-export const x = {}
+export default store

@@ -1,7 +1,9 @@
 import Avatar from './Avatar'
+import IconSelect from './IconSelect'
 
 const components = {
-    Avatar
+    Avatar,
+    IconSelect
 }
 export default {
     install(Vue) {

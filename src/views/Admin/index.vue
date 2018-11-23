@@ -6,40 +6,39 @@
             <Sider 
                 v-model="isFold"
                 collapsible>
-                 <Menu class="menu" @on-select="selectMenu" accordion theme="dark" width="auto" :active-name="1">
-                     <Menu-Item to="/admin" name="1">
+                 <Menu class="menu" @on-select="selectMenu" ref="menu" accordion theme="dark" width="auto" :open-names="menuOpenNames" :active-name="menuActiveName">
+                     <Menu-Item to="/admin" name="home">
                         <Icon type="md-home" />
                         <span v-show="!isFold">首页</span>
                     </Menu-Item>
                     <Submenu v-for="item in menuList" :key="item.menuId" v-if="item.type === 0" :name="item.menuId">
                         <span slot="title" :title="item.name">
-                            <!-- <Icon :type="item.icon" :title="item.name" /> -->
-                            <Icon type="md-apps" :title="item.name" />
+                            <Icon :type="item.icon" :title="item.name" />
                             <span v-show="!isFold">{{item.name}}</span>
                         </span>
-                        <Menu-Item :title="child.name" :to="mergePath(child.url)" v-for="child in item.children" v-if="child.type === 1" :key="child.menuId" :name="child.menuId">
-                            <Icon type="md-apps" />
-                            <!-- <Icon :type="child.icon" :title="child.name" /> -->
+                        <Menu-Item :title="child.name" :to="child.url" v-for="child in item.children" v-if="child.type === 1" :key="child.menuId" :name="child.menuId">
+                            <Icon :type="child.icon" :title="child.name" />
                             <span v-show="!isFold">{{child.name}}</span>
                         </Menu-Item>
                     </Submenu>
-                    <Menu-Item :title="item.name" :to="mergePath(item.url)" v-for="item in menuList" :key="item.menuId" v-if="item.type === 1" :name="item.menuId">
-                        <!-- <Icon :type="item.icon" :title="item.name" /> -->
-                        <Icon type="md-apps" />
+                    <Menu-Item :title="item.name" :to="item.url" v-for="item in menuList" :key="item.menuId" v-if="item.type === 1" :name="item.menuId">
+                        <Icon :type="item.icon" :title="item.name" />
                         <span v-show="!isFold">{{item.name}}</span>
                     </Menu-Item>
                 </Menu>
             </Sider>
             <Content class="content">
-                <Tabs v-show="tabTags.length > 0" type="card" class="tab" v-model="tabActiveName" @on-tab-remove="handleTabRemove" closable >
-                    <TabPane 
-                        :label="item.name"
-                        :name="item.name"
-                        v-for="item in tabTags"
-                        :key="item.menuId"
-                        >
-                    </TabPane>
-                </Tabs>
+                <div style="position: relative;" @contextmenu.stop.prevent="contextmenu">
+                    <Tabs :animated="false" v-show="tabTags.length > 0" type="card" class="tab" v-model="tabActiveName" @on-tab-remove="handleTabRemove" closable >
+                        <TabPane 
+                            :label="item.name"
+                            :name="item.name"
+                            v-for="item in tabTags"
+                            :key="item.menuId"
+                            >
+                        </TabPane>
+                    </Tabs>
+                </div>
                 <Layout class="route-view">
                     <router-view />
                 </Layout>
@@ -58,7 +57,11 @@ export default {
             isFold: false,
             username: 'admin',
             tabTags: [],
-            tabActiveName: ''
+            tabActiveName: '',
+            menuActiveName: 'home',
+            menuOpenNames: [],
+            tabDropdownShow: false,
+            dropdownLeft: 0
         }
     },
     created() {
@@ -67,17 +70,35 @@ export default {
             if (data.code !== 0) this.$router.push('/login')
         }).catch(err => this.$router.push('/login'))
         // 获取菜单列表
-        this.GET_MENU_LIST()
+        this.GET_MENU_LIST().then(res => {
+            const { path } = this.$route
+            this.originMenu.forEach(k => {
+                if (RegExp('^'+k.url).test(path)) {
+                    this.tabTags.push(k)
+                    this.menuActiveName = k.menuId
+                    this.menuOpenNames = [k.parentId]
+                }
+            })
+        })
     },
     watch: {
         // tab同步路由
         tabActiveName(val) {
+            if (!~val) return;
             const url = this.tabTags.filter(k => k.name === val)[0].url
             this.$router.push(url)
         },
         tabTags(val) {
             if (val.length === 0) this.$router.push('/admin')
         }
+    },
+    mounted() {
+        // 异步展开菜单
+         this.$refs['menu'].$nextTick(function() {
+            this.$watch('openNames',() => {
+                this.updateOpened() 
+            })
+         })
     },
     methods: {
         ...system.mapActions([
@@ -86,14 +107,14 @@ export default {
         ]),
         // 选择菜单
         selectMenu(menuId) {
+            if (menuId === 'home') return;
             const item = this.originMenu.filter((k) => {
                 return menuId === k.menuId
             })
             const repeat = this.tabTags.filter(k => k.menuId === item[0].menuId)
             if (!repeat.length) {
                 this.tabTags.push({
-                    ...item[0],
-                    url: '/admin/' + item[0].url.replace('sys/', '')
+                    ...item[0]
                 })
             }
             this.tabActiveName = item[0].name
@@ -102,9 +123,9 @@ export default {
         handleTabRemove(name) {
             this.tabTags = this.tabTags.filter(k => k.name !== name)
         },
-        mergePath(path) {
-            path = path.replace('sys/', '')
-            return  '/admin/' + path
+        contextmenu(e) {
+            this.tabDropdownShow = !this.tabDropdownShow
+            this.dropdownLeft = e.clientX - 200
         }
     },
     computed: {
@@ -120,6 +141,7 @@ export default {
         MHeader
     }
 };
+
 </script>
 
 <style scoped lang="less">
@@ -130,13 +152,16 @@ export default {
             overflow: hidden;
         }
         .content {
+            display: flex;
+            flex-direction: column;
             .tab {
                 padding: 10px 15px 0 15px;
-                background: #fff;
+                background: #363e4f;
                 box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12), 0 0 6px 0 rgba(0, 0, 0, 0.04);
                 user-select: none;
             }
             .route-view {
+                flex: 1;
                 background: #fff;
                 margin: 15px;
                 border: 1px solid #f1f1f1;

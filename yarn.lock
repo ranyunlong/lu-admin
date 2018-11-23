@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@types/validator@^9.4.3":
+  version "9.4.3"
+  resolved "http://registry.npm.taobao.org/@types/validator/download/@types/validator-9.4.3.tgz#11321eae0546b20f13020131ff890c294df72ecb"
+  integrity sha1-ETIergVGsg8TAgEx/4kMKU33Lss=
+
 abbrev@1:
   version "1.1.1"
   resolved "http://registry.npm.taobao.org/abbrev/download/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -6620,6 +6625,11 @@ validate-npm-package-license@^3.0.1:
   dependencies:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
+
+validator@^10.9.0:
+  version "10.9.0"
+  resolved "http://registry.npm.taobao.org/validator/download/validator-10.9.0.tgz#d10c11673b5061fb7ccf4c1114412411b2bac2a8"
+  integrity sha1-0QwRZztQYft8z0wRFEEkEbK6wqg=
 
 vary@~1.1.2:
   version "1.1.2"

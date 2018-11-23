@@ -55,19 +55,20 @@ export default {
         // 获取菜单列表
         GET_MENU_LIST({commit}) {
             const response = http.get('/sys/menu/list')
-            response.then((data) => {
-                const menus = data.data
-                const menu = menus.filter((k) => k.parentId === 0)
-                menu.forEach((k) => {
-                    menus.forEach((value) => {
-                        if (value.parentId === k.menuId) {
-                            k.children = k.children || []
-                            k.children.push(value)
-                        }
-                    })
-                })
-                commit('SET_ORIGIN_MENU', menus)
-                commit('SET_MENU_LIST', menu)
+            response.then(({data}) => {
+                if (Array.isArray(data)) {
+                    const menus = data
+                    const menu = menus.filter((k) => k.parentId === 0)
+                    function deep(arr) {
+                        arr.forEach((k) => {
+                            k.children = menus.filter(v => v.parentId === k.menuId)
+                            deep(k.children)
+                        })
+                    }
+                    deep(menu)
+                    commit('SET_ORIGIN_MENU', menus)
+                    commit('SET_MENU_LIST', menu)
+                }
             })
             return response
         },
@@ -118,9 +119,143 @@ export default {
                 }
             })
         },
+        GET_ADMIN_INFO({commit}, userId = -1) {
+            return http.get('/sys/user/info/'+userId)
+        },
         // 更新管理员
         UPDATE_ADMIN({commit}, data = {}) {
             return http.post('/sys/user/update', data)
+        },
+        // 添加管理员
+        ADD_ADMIN({commit}, data = {}) {
+            return http.post('/sys/user/save', data)
+        },
+        // 删除管理员
+        DELETE_ADMIN({commit}, data = []) {
+            if (!Array.isArray(data)) throw new Error('DELETE_ADMIN data must be Array(...userId)')
+            const response = http.post('/sys/user/delete', data)
+            return response
+        },
+        // 获取角色列表
+        GET_ROLE_LIST({commit}, data = {}) {
+            const { page = 1, limit = 10, sidx = 'roleId', order = 'asc', roleName = '' } = data
+            const response = http.get('/sys/role/list', {
+                params: {
+                    page,
+                    limit,
+                    sidx,
+                    order,
+                    roleName
+                }
+            })
+            return response
+        },
+        // 查询所有角色信息
+        GET_ROLE_SELECT({commit}) {
+            const response = http.get('/sys/role/select')
+            return response
+        },
+        // 添加角色
+        ADD_ROLE({commit}, data = {}) {
+            const { roleId = 0, roleName = '', remark = '', menuIdList = [] } = data
+            return http.post('/sys/role/save', data)
+        },
+        // 删除角色
+        DELETE_ROLE({commit}, data = []) {
+            if (!Array.isArray(data)) throw new Error('Invalid data: post data must be an Array.')
+            return http.post('/sys/role/delete', data)
+        },
+        // 更新角色
+        UPDATE_ROLE({commit}, data = {}) {
+            const { roleId = 0, roleName = '', remark = '', menuIdList = [] } = data
+            return http.post('/sys/role/update', data)
+        },
+        // 角色详情
+        GET_ROLE_INFO({commit}, roleId = 0) {
+           return http.get('/sys/role/info/'+roleId)
+        },
+        // 添加菜单
+        ADD_MENU({commit}, data = {}) {
+            const {
+                icon = '', 
+                list = [], 
+                menuId = 0, 
+                module = 0, 
+                name = '', 
+                open = true, 
+                orderNum = 0,
+                parentId = 0,
+                parentName = '',
+                perms = '',
+                type = 0,
+                url = ''
+            } = data
+            return http.post('/sys/menu/save', {
+                icon,
+                list,
+                menuId,
+                module,
+                name,
+                open,
+                orderNum,
+                parentId,
+                parentName,
+                perms,
+                type,
+                url
+            })
+        },
+        // 更新菜单
+        UPDATE_MENU({commit}, data = {}) {
+            const {
+                icon = '', 
+                list = [], 
+                menuId = 0, 
+                module = 0, 
+                name = '', 
+                open = true, 
+                orderNum = 0,
+                parentId = 0,
+                parentName = '',
+                perms = '',
+                type = 0,
+                url = ''
+            } = data
+            return http.post('/sys/menu/update', {
+                icon,
+                list,
+                menuId,
+                module,
+                name,
+                open,
+                orderNum,
+                parentId,
+                parentName,
+                perms,
+                type,
+                url
+            })
+        },
+        // 删除菜单
+        DELETE_MENU({commit}, menuId = '') {
+            return http.post('/sys/menu/delete/' + menuId)
+        },
+        // 获取日志
+        GET_LOG_LIST({commit}, params = {}) {
+            const {
+                page = 1,
+                limit = 10,
+                sidx = 'id',
+                order = 'desc',
+                key = ''
+            } = params
+           return http.get('/sys/log/list', {params: {
+               page,
+               limit,
+               sidx,
+               order,
+               key
+           }})
         }
     }
 }

@@ -53,6 +53,15 @@ html,body {
 .tab {
     .ivu-tabs-bar {
         margin-bottom: 0;
+        border: none;
     }
+    .ivu-tabs-nav{
+        .ivu-tabs-tab{
+            border: none;
+        }
+    }
+}
+.ivu-tree-children {
+    user-select: none;
 }
 </style>
