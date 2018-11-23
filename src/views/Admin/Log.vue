@@ -88,24 +88,21 @@
                 this.getLogList({
                     page: this.currPage,
                     limit: this.limit,
-                    username: this.search,
-                    operation: this.search
+                    key: this.search
                 })
             },
             currPage(v) {
                 this.getLogList({
                     page: this.currPage,
                     limit: this.limit,
-                    username: this.search,
-                    operation: this.search
+                    key: this.search
                 })
             },
             search() {
                 this.getLogList({
                     page: this.currPage,
                     limit: this.limit,
-                    username: this.search,
-                    operation: this.search
+                    key: this.search
                 })
             }
         }, 

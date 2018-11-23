@@ -82,7 +82,7 @@ export default {
     mounted() {
         document.addEventListener('keydown', this.login)
     },
-    destroyed() {
+    beforeDestroy() {
         document.removeEventListener('keydown', this.login)
     },
     methods: {
@@ -120,6 +120,7 @@ export default {
                             this.$router.push({
                                 path: '/admin'
                             })
+                            document.removeEventListener('keydown', this.login)
                         }
                     })
                 }

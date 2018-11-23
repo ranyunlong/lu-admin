@@ -38,6 +38,7 @@
                             >
                         </TabPane>
                     </Tabs>
+                    <ContextMenu />
                 </div>
                 <Layout class="route-view">
                     <router-view />
