@@ -98,6 +98,11 @@ export default {
         },
         tabTags(val) {
             if (val.length === 0) this.$router.push('/admin')
+        },
+        $route(val) {
+            if (val.fullPath === '/admin') {
+                this.tabTags = []
+            }
         }
     },
     mounted() {
