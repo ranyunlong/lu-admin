@@ -278,6 +278,24 @@ export default {
         GET_SCHEDULE_INFO({commit}, jobId = 0){
             return http.get('/sys/schedule/info/' + jobId)
         },
+        GET_SCHEDULE_LOG_LIST({commit}, params = {}) {
+            const {
+                page = 1,
+                limit = 10,
+                sidx = 'logId',
+                order = 'asc',
+                beanName = ''
+            } = params
+            return http.get('/sys/scheduleLog/list', {
+                params: {
+                    page,
+                    limit,
+                    sidx,
+                    order,
+                    beanName
+                }
+            })
+        },
         // 暂停定时任务
         SCHEDULE_PAUSE({commit}, jobIds = []) {
            return http.post('/sys/schedule/pause', jobIds)

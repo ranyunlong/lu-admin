@@ -3,6 +3,7 @@
         <div class="top-bar">
             <Input style="width: 200px;" clearable v-model="search" search placeholder="bean名称" />
             <Button type="success" @click="showModal = true, modalTitle = '新建任务', actionType = 'add'">新建任务</Button>
+            <Button type="info" @click="showLogsModal = true">任务日志</Button>
         </div>
         <div class="content">
             <Table highlight-row stripe border size="small" no-data-text="没有相关定时任务" :columns="columns" :loading="loading" :data="data"></Table>
@@ -23,6 +24,7 @@
             :title="modalTitle"
             @ok="handlerAction"
             :action-type="actionType" />
+        <JobScheduleLogs v-model="showLogsModal" />
     </Layout>
 </template>
 
@@ -31,12 +33,14 @@
     const system = createNamespacedHelpers('system')
     import JobScheduleTool from './components/JobScheduleTool'
     import JobScheduleFormModal from './components/JobScheduleFormModal'
+    import JobScheduleLogs from './components/JobScheduleLogs'
     export default {
         data() {
             return {
                 search: '',
                 loading: false,
                 showModal: false,
+                showLogsModal: false,
                 data: [],
                 limit: 10,
                 totalCount: 0,
@@ -46,6 +50,7 @@
                 modalTitle: '',
                 actionType: '',
                 modalDefaultData: {},
+                showLogModal: false,
                 columns: [
                     {
                         renderHeader: (h, params) => {
@@ -308,7 +313,8 @@
             }
         },
         components: {
-            JobScheduleFormModal
+            JobScheduleFormModal,
+            JobScheduleLogs
         }
     }
 </script>
