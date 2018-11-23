@@ -21,8 +21,12 @@ export const adminModules = [{
   component: $import('Admin/Menu')
 },{
   id: 4,
-  name: '系统日志',
+  name: '系统日志模块',
   component: $import('Admin/Log')
+},{
+  id: 5,
+  name: '定时任务模块',
+  component: $import('Admin/JobSchedule')
 }]
 
 // 路由是否准备好

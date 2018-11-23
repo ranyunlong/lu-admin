@@ -256,6 +256,85 @@ export default {
                order,
                key
            }})
+        },
+        // 获取定时任务
+        GET_SCHEDULE_LIST({commit}, params = {}) {
+            const {
+                page = 1,
+                limit = 10,
+                sidx = 'jobId',
+                order = 'asc',
+                beanName = ''
+            } = params
+            return http.get('/sys/schedule/list', {params: {
+                page,
+                limit,
+                sidx,
+                order,
+                beanName
+            }})
+        },
+        // 获取任务详情
+        GET_SCHEDULE_INFO({commit}, jobId = 0){
+            return http.get('/sys/schedule/info/' + jobId)
+        },
+        // 暂停定时任务
+        SCHEDULE_PAUSE({commit}, jobIds = []) {
+           return http.post('/sys/schedule/pause', jobIds)
+        },
+        // 启动定时任务
+        SCHEDULE_RUN({commit}, jobIds = []) {
+            return http.post('/sys/schedule/run', jobIds)
+        },
+        // 恢复定时任务 
+        SCHEDULE_RESUME({commit}, jobIds = []) {
+            return http.post('/sys/schedule/resume', jobIds)
+        },
+        // 添加定时任务
+        ADD_SCHEDULE({commit}, data = {}) {
+            const {
+                beanName = '',
+                cronExpression = '',
+                jobId = 0,
+                methodName =  '',
+                params = '',
+                remark = '',
+                status = 0
+            } = data
+            return http.post('/sys/schedule/save', {
+                beanName,
+                cronExpression,
+                jobId,
+                methodName,
+                params,
+                remark,
+                status
+            })
+        },
+        // 修改定时任务
+        UPDATE_SCHEDULE({commit}, data = {}) {
+            const {
+                beanName = '',
+                cronExpression = '',
+                jobId = 0,
+                methodName =  '',
+                params = '',
+                remark = '',
+                status = 0
+            } = data
+            return http.post('/sys/schedule/update', {
+                beanName,
+                cronExpression,
+                jobId,
+                methodName,
+                params,
+                remark,
+                status
+            })
+        },
+        // 删除定时任务
+        DELETE_SCHEDULE({commit}, jobIds = []) {
+            return http.post('/sys/schedule/delete', jobIds)
         }
     }
 }

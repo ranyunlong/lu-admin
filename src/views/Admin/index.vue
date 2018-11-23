@@ -28,7 +28,7 @@
                 </Menu>
             </Sider>
             <Content class="content">
-                <div ref="tab-bar" style="position: relative;" @contextmenu.stop.prevent="contextmenu">
+                <a ref="tab-bar" href="javascript:void(0)" tabindex="99" style="position: relative; display:block;" @blur.stop="contextMenuShow=false" @contextmenu.stop.prevent="contextmenu">
                     <Tabs :animated="false" v-show="tabTags.length > 0" type="card" class="tab" v-model="tabActiveName" @on-tab-remove="handleTabRemove" closable >
                         <TabPane 
                             :label="item.name"
@@ -38,13 +38,13 @@
                             >
                         </TabPane>
                     </Tabs>
-                    <ContextMenu :show.sync="contextMenuShow" :x="contextMenuX" :y="40">
+                    <ContextMenu :show.sync="contextMenuShow" :x="contextMenuX" :y="contextMenuY">
                         <ContextMenuItem @click="tabTags = []">关闭所有</ContextMenuItem>
-                        <ContextMenuItem divided @click="closeTabBefore">关闭之前</ContextMenuItem>
-                        <ContextMenuItem divided @click="closeTabAfter">关闭之后</ContextMenuItem>
+                        <ContextMenuItem divided @click="closeTabBefore">关闭左侧</ContextMenuItem>
+                        <ContextMenuItem divided @click="closeTabAfter">关闭右侧</ContextMenuItem>
                         <ContextMenuItem divided @click="closeTabOther">关闭其他</ContextMenuItem>
                     </ContextMenu>
-                </div>
+                </a>
                 <Layout class="route-view">
                     <router-view />
                 </Layout>
@@ -163,9 +163,11 @@ export default {
         },
         contextmenu(e) {
             const l = this.$refs['tab-bar'].offsetLeft
+            const t = this.$refs['tab-bar'].offsetTop
+            this.$refs['tab-bar'].focus()
             this.contextMenuShow = !this.contextMenuShow
             this.contextMenuX = e.clientX - l
-            this.contextMenuY = e.clientY
+            this.contextMenuY = e.clientY - t
         }
     },
     computed: {
