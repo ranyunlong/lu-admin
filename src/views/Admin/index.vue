@@ -28,7 +28,7 @@
                 </Menu>
             </Sider>
             <Content class="content">
-                <div style="position: relative;" @contextmenu.stop.prevent="contextmenu">
+                <div ref="tab-bar" style="position: relative;" @contextmenu.stop.prevent="contextmenu">
                     <Tabs :animated="false" v-show="tabTags.length > 0" type="card" class="tab" v-model="tabActiveName" @on-tab-remove="handleTabRemove" closable >
                         <TabPane 
                             :label="item.name"
@@ -38,7 +38,12 @@
                             >
                         </TabPane>
                     </Tabs>
-                    <ContextMenu />
+                    <ContextMenu :show.sync="contextMenuShow" :x="contextMenuX" :y="40">
+                        <ContextMenuItem @click="tabTags = []">关闭所有</ContextMenuItem>
+                        <ContextMenuItem divided @click="closeTabBefore">关闭之前</ContextMenuItem>
+                        <ContextMenuItem divided @click="closeTabAfter">关闭之后</ContextMenuItem>
+                        <ContextMenuItem divided @click="closeTabOther">关闭其他</ContextMenuItem>
+                    </ContextMenu>
                 </div>
                 <Layout class="route-view">
                     <router-view />
@@ -61,8 +66,9 @@ export default {
             tabActiveName: '',
             menuActiveName: 'home',
             menuOpenNames: [],
-            tabDropdownShow: false,
-            dropdownLeft: 0
+            contextMenuShow: false,
+            contextMenuX: 0,
+            contextMenuY: 0
         }
     },
     created() {
@@ -76,6 +82,7 @@ export default {
             this.originMenu.forEach(k => {
                 if (RegExp('^'+k.url).test(path)) {
                     this.tabTags.push(k)
+                    this.tabActiveName = k.name
                     this.menuActiveName = k.menuId
                     this.menuOpenNames = [k.parentId]
                 }
@@ -124,9 +131,41 @@ export default {
         handleTabRemove(name) {
             this.tabTags = this.tabTags.filter(k => k.name !== name)
         },
+        closeTabBefore() {
+            let index = null
+            const active = this.tabTags.find((k, i) => {
+                if (k.name === this.tabActiveName) {
+                    index = i
+                    return true
+                }
+            })
+            if (active) {
+                this.tabTags = this.tabTags.filter((k, i) => i >= index)
+            }
+        },
+        closeTabAfter() {
+            let index = null
+            const active = this.tabTags.find((k, i) => {
+                if (k.name === this.tabActiveName) {
+                    index = i
+                    return true
+                }
+            })
+            if (active) {
+                this.tabTags = this.tabTags.filter((k, i) => i <= index)
+            }
+        },
+        closeTabOther() {
+            const active = this.tabTags.find(k => k.name === this.tabActiveName)
+            if (active) {
+                this.tabTags = this.tabTags.filter(k => k.name === active.name)
+            }
+        },
         contextmenu(e) {
-            this.tabDropdownShow = !this.tabDropdownShow
-            this.dropdownLeft = e.clientX - 200
+            const l = this.$refs['tab-bar'].offsetLeft
+            this.contextMenuShow = !this.contextMenuShow
+            this.contextMenuX = e.clientX - l
+            this.contextMenuY = e.clientY
         }
     },
     computed: {
