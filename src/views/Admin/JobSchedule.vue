@@ -15,14 +15,14 @@
                 <Button type="warning"  @click="handleAction(null, SCHEDULE_PAUSE)">批量停止</Button>
             </div>
             <Page :page-size-opts="[5, 10]"  @on-page-size-change="e => limit = e" :total="totalCount" :current.sync="currPage" size="small" show-elevator show-sizer />
-            <JobScheduleFormModal
-                ref="modal"
-                v-model="showModal"
-                :data="modalDefaultData"
-                :title="modalTitle"
-                @ok="handlerAction"
-                :action-type="actionType" />
         </div>
+        <JobScheduleFormModal
+            ref="modal"
+            v-model="showModal"
+            :data="modalDefaultData"
+            :title="modalTitle"
+            @ok="handlerAction"
+            :action-type="actionType" />
     </Layout>
 </template>
 

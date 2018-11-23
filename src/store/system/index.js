@@ -335,6 +335,56 @@ export default {
         // 删除定时任务
         DELETE_SCHEDULE({commit}, jobIds = []) {
             return http.post('/sys/schedule/delete', jobIds)
+        },
+        // 获取参数管理列表
+        GET_CONFIG_LIST({commit}, params = {}) {
+            const {
+                page = 1,
+                limit = 10,
+                sidx = 'id',
+                order = 'desc',
+                key = ''
+            } = params
+            return http.get('/sys/config/list', {params})
+        },
+        // 获取参数管理详情
+        GET_CONFIG_INFO({commit}, id = '') {
+            return http.get('/sys/config/info/' + id)
+        },
+        // 添加参数管理
+        ADD_CONFIG({commit}, data = {}) {
+            const { 
+                id = 0,
+                key = "",
+                value = "",
+                remark = ""
+            } = data
+            return  http.post('/sys/config/save', {
+                id,
+                key,
+                value,
+                remark
+            })
+        },
+        // 更新参数管理
+        UPDATE_CONFIG({commit}) {
+            const { 
+                id = 0,
+                key = "",
+                value = "",
+                remark = ""
+            } = data
+            return  http.post('/sys/config/update', {
+                id,
+                key,
+                value,
+                remark
+            })
+        },
+        // 删除参数管理
+        DELETE_CONFIG({commit}, id = []) {
+            return http.post('/sys/config/delete')
         }
+
     }
 }
