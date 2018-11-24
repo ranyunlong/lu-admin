@@ -57,21 +57,25 @@
                     {
                         title: '方法名称',
                         key: 'methodName',
-                        align:'center',
-                        sortable: true,
+                        align:'center'
                     },
                     {
                         title: '参数',
                         key: 'params',
-                        align:'center',
-                        sortable: true,
+                        align:'center'
                     },
                     {
                         title: '状态',
                         key: 'status',
                         align:'center',
-                        sortable: true,
-                        width: 100
+                        render: (h, params) => {
+                            return h('Tag', {
+                                props: {
+                                    type: 'dot',
+                                    color: params.row.status === 1 ? 'success' : 'error'
+                                }
+                            }, params.row.status === 1 ? '成功' : '失败')
+                        }
                     },
                     {
                         title: '耗时/毫秒',

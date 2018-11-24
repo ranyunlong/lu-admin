@@ -95,6 +95,7 @@
         white-space: nowrap;
         display: flex;
         align-items: center;
+        overflow: hidden;
         cursor: pointer;
         img {
             width: 30px;

@@ -5,7 +5,7 @@
             <Button type="success" @click="showModal = true, actionType = 'add', modalTitle = '添加管理员'">新增</Button>
         </div>
         <div class="content">
-            <Table no-data-text="暂无管理员数据" stripe border size="small" highlight-row :columns="columns" :loading="loading" :data="data"></Table>
+            <Table @on-selection-change="e => tableSelection = e" no-data-text="暂无管理员数据" stripe border size="small" highlight-row :columns="columns" :loading="loading" :data="data"></Table>
         </div>
         <div class="bottom-bar">
             <Button type="error" :loading="deleteLoadingState" @click="deleteMany">批量删除</Button>
@@ -22,32 +22,10 @@
     export default {
         data() {
             return {
-                columns: [
+                columns: [                      // 表单表头
                     {
-                        renderHeader: (h) => {
-                            return h('Checkbox', {
-                                on: {
-                                    'on-change': (e) => {
-                                        this.data.forEach(k => k.selected = e)
-                                    }
-                                }
-                            })
-                        },
-                        width: 60,
-                        align: 'center',
-                        key: 'selected',
-                        render: (h, params) => {
-                            return h('Checkbox', {
-                                props: {
-                                    value: params.row.selected
-                                },
-                                on: {
-                                    'on-change':(e) => {
-                                        this.data[params.index].selected = e
-                                    }
-                                }
-                            })
-                        }
+                        type: 'selection',
+                        width: 50
                     },
                     {
                         title: 'ID',
@@ -184,9 +162,10 @@
                         }
                     }
                 ],
-                actionType: '',
-                showModal: false,
-                modalDefaultData: {
+                actionType: '',                 // 表单提交的类型 add 添加数据 edit 编辑数据
+                showModal: false,               // 模态框显示状态
+                tableSelection: [],             // 表格多选数据
+                modalDefaultData: {             // 模态框的默认数据
                     userId: 0,
                     username: '',
                     password: '',
@@ -195,16 +174,16 @@
                     roleIdList: [],
                     status: '1'
                 },
-                data:[],
-                currPage: 1,
-                pageSize: 0,
-                totalCount: 0,
-                totalPage: 0,
-                loading: true,
-                limit: 10,
-                username: '',
-                modalTitle: '添加管理员',
-                deleteLoadingState: false
+                data:[],                        // 表格数据
+                currPage: 1,                    // 当前页码
+                pageSize: 0,                    // pageSize（暂时没用）
+                totalCount: 0,                  // 后台数据总数
+                totalPage: 0,                   // 后台页面数据总数
+                loading: true,                  // 异步loading状态
+                limit: 10,                      // 查询条数限制
+                username: '',                   // 搜索框值
+                modalTitle: '添加管理员',        // 模态框标题
+                deleteLoadingState: false       // 删除按钮状态
             }
         },
         created() {
@@ -212,6 +191,7 @@
         },
         watch: {
             username() {
+                this.currPage = 1
                 this.getAdminList()
             },
             limit() {
@@ -228,6 +208,7 @@
                 'ADD_ADMIN',
                 'DELETE_ADMIN'
             ]),
+            // 处理添加修改请求
             handlerAction(postData) {
                 if (this.actionType === 'add') {
                     this.ADD_ADMIN(postData).then(({data}) => {
@@ -260,6 +241,7 @@
                     }).catch(err => console.log(err))
                 }
             },
+            // 获取管理员列表
             getAdminList() {
                 this.loading = true
                 this.GET_ADMIN_LIST({
@@ -270,10 +252,7 @@
                 }).then(({data}) => {
                     const { list = [], currPage = 1, pageSize = 1, totalCount = 1, totalPage = 1, msg = '' } = data.page
                     if (data.code === 0) {
-                        this.data = list.map(k => {
-                            k.selected = false 
-                            return k
-                        })
+                        this.data = list
                         this.currPage = currPage
                         this.pageSize = pageSize
                         this.totalCount = totalCount
@@ -285,8 +264,9 @@
                     }
                 }).catch(err => console.log(err))
             },
+            // 批量删除
             deleteMany() {
-                const deletes = this.data.filter(k => k.selected).map(k => k.userId)
+                const deletes = this.tableSelection.map(k => k.userId)
                 if (!!~deletes.indexOf(1)) {
                     return this.$Notice.warning({
                         title: '超级管理员，不能删除！'

@@ -6,7 +6,7 @@
             <Button type="info" @click="showLogsModal = true">任务日志</Button>
         </div>
         <div class="content">
-            <Table highlight-row stripe border size="small" no-data-text="没有相关定时任务" :columns="columns" :loading="loading" :data="data"></Table>
+            <Table @on-selection-change="d => tableSelection = d" highlight-row stripe border size="small" no-data-text="没有相关定时任务" :columns="columns" :loading="loading" :data="data"></Table>
         </div>
         <div class="bottom-bar">
             <div>
@@ -37,55 +37,28 @@
     export default {
         data() {
             return {
-                search: '',
-                loading: false,
-                showModal: false,
-                showLogsModal: false,
-                data: [],
-                limit: 10,
-                totalCount: 0,
-                currPage: 0,
-                actionLoading: false,
-                selecteAll: false,
-                modalTitle: '',
-                actionType: '',
-                modalDefaultData: {},
-                showLogModal: false,
-                columns: [
+                search: '',                 // 搜索框数据
+                loading: false,             // 异步loading状态
+                showModal: false,           // 表单模态框显示状态   
+                showLogsModal: false,       // 日志模态框显示状态
+                data: [],                   // 表格数据
+                limit: 10,                  // 查询条数限制
+                totalCount: 0,              // 后台数据总数
+                currPage: 0,                // 当前页码
+                modalTitle: '',             // 模态框标题
+                actionType: '',             // 表单提交的类型 add 添加数据 edit 编辑数据
+                modalDefaultData: {},       // 模态框的默认数据
+                tableSelection: [],         // 表格多选数据
+                columns: [                   // 表头数据
                     {
-                        renderHeader: (h, params) => {
-                            return h('Checkbox',{
-                                on: {
-                                    'on-change': (e) => {
-                                        console.log(params)
-                                        this.data.forEach(k => k.selected = e)
-                                    }
-                                }
-                            })
-                        },
-                        value: false,
-                        width: 60,
-                        align: 'center',
-                        key: 'selected',
-                        render: (h, params) => {
-                            return h('Checkbox', {
-                                props: {
-                                    value: params.row.selected
-                                },
-                                on: {
-                                    'on-change':(e) => {
-                                        this.data[params.index].selected = e
-                                    }
-                                }
-                            })
-                        }
+                        type: 'selection',
+                        width: 50
                     },
                     {
                         title: 'ID',
                         key: 'jobId',
                         align: 'center',
-                        sortable: true,
-                        width: 100
+                        sortable: true
                     },
                     {
                         title: 'bean名称',
@@ -193,6 +166,7 @@
                 this.getScheduleList()
             },
             search() {
+                this.currPage = 1
                 this.getScheduleList()
             }
         },
@@ -253,7 +227,7 @@
                     jobIds.push(jobId)
                     
                 } else {
-                    jobIds = this.selectes
+                    jobIds = this.tableSelection.map(k => k.jobId)
                 }
 
                 if(jobIds.length === 0) {
@@ -280,6 +254,7 @@
                     }
                 })
             },
+            // 获取表格数据列表
             getScheduleList() {
                 this.loading = true
                 this.GET_SCHEDULE_LIST({
@@ -306,11 +281,6 @@
                     }
                     this.loading = false
                 })
-            }
-        },
-        computed: {
-            selectes() {
-                return this.data.filter(k => k.selected).map(k => k.jobId)
             }
         },
         components: {

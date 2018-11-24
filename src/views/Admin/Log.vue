@@ -19,13 +19,13 @@
     export default {
         data() {
             return {
-                search: '',
-                loading: false,
-                data: [],
-                limit: 10,
-                totalCount: 0,
-                currPage: 0,
-                columns: [
+                search: '',         // 搜索框值
+                loading: false,     // 异步loading状态
+                data: [],           // 表格数据
+                limit: 10,          // 查询条数限制
+                totalCount: 0,      // 后台数据总数
+                currPage: 0,        // 当前页码
+                columns: [           // 表头数据
                     {
                         title: 'ID',
                         key: 'id',

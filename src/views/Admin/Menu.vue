@@ -13,14 +13,15 @@
     export default {
         data() {
             return {
-                data: [],
-                modalTitle: '添加菜单',
-                showModal: false,
-                actionType: 'add',
-                modalDefaultData: {}
+                data: [],                // 数据列表
+                modalTitle: '添加菜单',   // 表单模态框表体
+                showModal: false,        // 表单模态框显示状态
+                actionType: 'add',       // 表单提交类型 add 添加 edit 编辑
+                modalDefaultData: {}     // 表单的默认数据
             }
         },
         created() {
+            // 获取菜单列表
             this.GET_MENU_LIST()
         },
         methods: {
@@ -30,6 +31,7 @@
                 'UPDATE_MENU',
                 'DELETE_MENU',
             ]),
+            // 编译菜单树
             renderContent(h, { root, node, data  }) {
                 return h(MenuListItem,{
                     props: {
@@ -71,6 +73,7 @@
                     }
                 })
             },
+            // 处理请求
             handlerAction(postData) {
                if (this.actionType === 'add') {
                    this.ADD_MENU(postData).then(({data}) => {

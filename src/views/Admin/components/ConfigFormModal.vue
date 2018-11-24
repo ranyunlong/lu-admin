@@ -113,8 +113,18 @@
             value(v) {
                 this.show = v
             },
-            data(data) {
-                
+            data(data = {}) {
+                const { id = 0,
+                    paramKey = '',
+                    paramValue = '',
+                    remark = '' 
+                } = data
+                this.form = {
+                    id,
+                    paramKey,
+                    paramValue,
+                    remark
+                }
             }
         }
     }

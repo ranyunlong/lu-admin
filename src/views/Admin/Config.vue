@@ -5,10 +5,10 @@
             <Button type="success" @click="showModal = true, modalTitle ='添加参数配置', actionType = 'add'">新增</Button>
         </div>
         <div class="content">
-            <Table highlight-row stripe border size="small" no-data-text="没有相关日志" :columns="columns" :loading="loading" :data="data"></Table>
+            <Table @on-selection-change="d => tableSelection = d" highlight-row stripe border size="small" no-data-text="没有相关日志" :columns="columns" :loading="loading" :data="data"></Table>
         </div>
         <div class="bottom-bar">
-            <Button type="error">批量删除</Button>
+            <Button type="error" :disabled="loading" @click="deleteMany">批量删除</Button>
             <Page :page-size-opts="[5, 10]"  @on-page-size-change="e => limit = e" :total="totalCount" :current.sync="currPage" size="small" show-elevator show-sizer />
         </div>
         <ConfigFormModal
@@ -25,23 +25,26 @@
 <script>
     import { createNamespacedHelpers } from 'vuex'
     const system = createNamespacedHelpers('system')
+    // ConfigFormModal 表单模态框
     import ConfigFormModal from './components/ConfigFormModal'
     export default {
         data() {
             return {
-                search: '',
-                loading: false,
-                data: [],
-                limit: 10,
-                totalCount: 0,
-                currPage: 1,
-                showModal: false,
-                modalTitle: '',
-                modalDefaultData: {},
-                actionType: '',
-                columns: [
+                search: '',                 // 搜索框值
+                loading: false,             // 异步loading状态
+                data: [],                   // 表格数据
+                limit: 10,                  // 查询条数限制
+                totalCount: 0,              // 后台数据总数
+                currPage: 1,                // 当前页码
+                showModal: false,           // 模态框显示状态
+                modalTitle: '',             // 模态框标题
+                modalDefaultData: {},       // 模态框的默认数据
+                actionType: '',             // 表单提交的类型 add 添加数据 edit 编辑数据
+                tableSelection: [],         // 表格多选数据
+                columns: [                  // 表头数据
                     {
-                        type: 'selection'
+                        type: 'selection',
+                        width: 50
                     },
                     {
                         title: 'ID',
@@ -68,14 +71,66 @@
                     {
                         title: '操作',
                         align: 'center',
+                        width: 150,
+                        render: (h, params) => {
+                            return h('div',[
+                                h('Button',{
+                                    props: {
+                                        size: 'small',
+                                        type: 'success'
+                                    },
+                                    on: {
+                                        click: () =>{
+                                            this.showModal = true
+                                            this.actionType = 'edit'
+                                            this.modalDefaultData = JSON.parse(JSON.stringify(params.row))
+                                            this.modalTitle = '修改参数'
+                                        }
+                                    },
+                                    style: {
+                                        marginRight: '8px'
+                                    }
+                                }, '修改'),
+                                h('Button',{
+                                    props: {
+                                        size: 'small',
+                                        type: 'error',
+                                        loading: params.row.loading
+                                    },
+                                    style: {
+                                        width: '40px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.$set(this.data[params.index], 'loading', true)
+                                            return this.DELETE_CONFIG([params.row.id]).then(({data}) => {
+                                                const { code, msg } = data
+                                                if (code === 0) {
+                                                    this.$Notice.success({
+                                                        title: '删除成功！'
+                                                    })
+                                                    return this.getConfigList()
+                                                }
+                                                this.$Notice.error({
+                                                    title: msg
+                                                })
+                                                this.data[params.index].loading = false
+                                            })
+                                        }
+                                    }
+                                }, params.row.loading ? '' : '删除')
+                            ])
+                        }
                     }
                 ]
             }
         },
         created() {
+            // 加载表格数据列表
             this.getConfigList()
         },
         methods: {
+            // 处理提交修改请求
             handlerAction(postData) {
                 if(this.actionType === 'add') {
                     this.ADD_CONFIG(postData).then(({data}) => {
@@ -111,6 +166,7 @@
                     })
                 }
             },
+            // 获取表格数据列表
             getConfigList() {
                 this.loading = true
                 this.GET_CONFIG_LIST({
@@ -128,6 +184,28 @@
                     this.loading = false
                 }).catch(err => console.log(err))
             },
+            // 批量删除
+            deleteMany() {
+                const deletes = this.tableSelection.map(k => k.id)
+                if (deletes.length > 0) {
+                    return this.DELETE_CONFIG(deletes).then(({data}) => {
+                        const { code, msg } = data
+                        if (code === 0) {
+                            this.$Notice.success({
+                                title: '批量删除成功！'
+                            })
+                            return this.getConfigList()
+                        }
+                        this.$Notice.error({
+                            title: msg
+                        })
+                    })
+                
+                }
+                this.$Notice.error({
+                    title: '没有选择数据'
+                })
+            },
             ...system.mapActions([
                 'GET_CONFIG_LIST',
                 'ADD_CONFIG',
@@ -143,6 +221,7 @@
                 this.getConfigList()
             },
             search() {
+                this.currPage = 1
                 this.getConfigList()
             }
         },

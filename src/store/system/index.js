@@ -385,7 +385,7 @@ export default {
             })
         },
         // 更新参数管理
-        UPDATE_CONFIG({commit}) {
+        UPDATE_CONFIG({commit}, data = {}) {
             const { 
                 id = 0,
                 paramKey = "",
@@ -401,7 +401,7 @@ export default {
         },
         // 删除参数管理
         DELETE_CONFIG({commit}, id = []) {
-            return http.post('/sys/config/delete')
+            return http.post('/sys/config/delete', id)
         }
 
     }

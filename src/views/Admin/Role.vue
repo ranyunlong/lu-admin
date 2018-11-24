@@ -2,11 +2,10 @@
     <Layout style="background: #fff;">
         <div class="top-bar">
             <Input style="width: 200px;" clearable v-model="search" search placeholder="角色名称" />
-            <!-- <Button type="primary">查询</Button> -->
             <Button type="success" @click="showModal = true, actionType = 'add', modalTitle = '新增角色'">新增</Button>
         </div>
         <div class="content">
-            <Table  no-data-text="暂无权限数据" stripe border size="small" highlight-row :columns="columns" :loading="loading" :data="data"></Table>
+            <Table @on-selection-change="d => tableSelection = d" no-data-text="暂无权限数据" stripe border size="small" highlight-row :columns="columns" :loading="loading" :data="data"></Table>
         </div>
         <div class="bottom-bar">
             <Button type="error" :loading="deleteLoadingState" @click="deleteMany">批量删除</Button>
@@ -29,42 +28,21 @@
     export default {
         data() {
             return {
-                search: '',
-                actionType: '',
-                showModal: false,
-                loading: false,
-                limit: 10,
-                totalCount: 0,
-                currPage: 1,
-                deleteLoadingState: false,
-                modalDefaultData: {},
-                modalTitle: '',
-                columns: [
+                search: '',                     // 搜索框值
+                actionType: '',                 // 表单提交的类型 add 添加数据 edit 编辑数据
+                showModal: false,               // 模态框显示状态
+                loading: false,                 // 异步loading状态
+                limit: 10,                      // 查询条数限制
+                totalCount: 0,                  // 后台数据总数
+                currPage: 1,                    // 当前页码
+                deleteLoadingState: false,      // 删除按钮状态
+                modalDefaultData: {},           // 模态框的默认数据
+                modalTitle: '',                 // 模态框标题
+                tableSelection: [],             // 表格多选数据
+                columns: [                      // 表格数据
                     {
-                        renderHeader: (h) => {
-                            return h('Checkbox', {
-                                on: {
-                                    'on-change': (e) => {
-                                        this.data.forEach(k => k.selected = e)
-                                    }
-                                }
-                            })
-                        },
-                        width: 60,
-                        align: 'center',
-                        key: 'selected',
-                        render: (h, params) => {
-                            return h('Checkbox', {
-                                props: {
-                                    value: params.row.selected
-                                },
-                                on: {
-                                    'on-change':(e) => {
-                                        this.data[params.index].selected = e
-                                    }
-                                }
-                            })
-                        }
+                        type: 'selection',
+                        width: 50
                     },
                     {
                         title: 'ID',
@@ -143,14 +121,16 @@
                         }
                     }
                 ],
-                data: []
+                data: []                        // 表格列表
             }
         },
         created() {
+            // 获取权限列表
             this.getRoleList()
         },
         watch: {
             search() {
+                this.currPage = 1
                 this.getRoleList()
             },
             currPage() {
@@ -167,6 +147,7 @@
                 'UPDATE_ROLE',
                 'DELETE_ROLE'
             ]),
+            // 获取权限列表
             getRoleList() {
                 this.loading = true
                 this.GET_ROLE_LIST({
@@ -188,9 +169,10 @@
                     this.loading = false
                 }).catch()
             },
+            // 批量删除
             deleteMany() {
                 this.deleteLoadingState = true
-                const deletes = this.data.filter(k => k.selected).map(k => k.roleId)
+                const deletes = this.tableSelection.map(k => k.roleId)
                 this.DELETE_ROLE(deletes).then(({data}) => {
                     const { code, msg} = data
                     if (code === 0) {
@@ -207,6 +189,7 @@
                     }
                 })
             },
+            // 处理添加删除请求
             handlerAction(postData) {
                 if (this.actionType === 'add') {
                     this.ADD_ROLE(postData).then(({data}) => {
