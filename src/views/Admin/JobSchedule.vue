@@ -114,7 +114,8 @@
                                         this.handleAction(params.row.jobId, this.SCHEDULE_RUN, ()=> {
                                             this.data[params.index].state.run = false
                                             this.$Notice.success({
-                                                title: '运行成功！'
+                                                title: '成功',
+                                                desc: '已运行！'
                                             })
                                         })
                                     },
@@ -129,7 +130,8 @@
                                         this.handleAction(params.row.jobId, this.SCHEDULE_RESUME, ()=> {
                                             this.data[params.index].state.resume = false
                                             this.$Notice.success({
-                                                title: '恢复成功！'
+                                                title: '成功',
+                                                desc: '已恢复！'
                                             })
                                         })
                                     },
@@ -138,7 +140,8 @@
                                         this.handleAction(params.row.jobId, this.SCHEDULE_PAUSE, ()=> {
                                             this.data[params.index].state.pause = false
                                             this.$Notice.success({
-                                                title: '暂停成功！'
+                                                title: '成功',
+                                                desc: '已停止！'
                                             })
                                         })
                                     },
@@ -147,7 +150,8 @@
                                         this.handleAction(params.row.jobId, this.DELETE_SCHEDULE, ()=> {
                                             this.data[params.index].state.delete = false
                                             this.$Notice.success({
-                                                title: '删除成功！'
+                                                title: '成功',
+                                                desc: '删除成功！'
                                             })
                                         })
                                     }
@@ -193,11 +197,13 @@
                             this.showModal = false
                             this.getScheduleList()
                             this.$Notice.success({
-                                title: '任务添加成功！'
+                                title: '成功',
+                                desc: '任务已添加！'
                             })
                         } else {
                             this.$Notice.error({
-                                title: msg
+                                title: '错误',
+                                desc: msg
                             })
                             this.$refs['modal'].clearLoading()
                         }
@@ -209,11 +215,13 @@
                             this.showModal = false
                             this.getScheduleList()
                             this.$Notice.success({
-                                title: '任务修改成功！'
+                                title: '成功',
+                                desc: '任务已修改！'
                             })
                         } else {
                             this.$Notice.error({
-                                title: msg
+                                title: '错误',
+                                desc: msg
                             })
                             this.$refs['modal'].clearLoading()
                         }
@@ -232,7 +240,8 @@
 
                 if(jobIds.length === 0) {
                     this.$Notice.error({
-                        title: '未选择任何操作选项！'
+                        title: '错误',
+                        desc: '未选择任何操作选项！'
                     })
                     return;
                 }
@@ -243,13 +252,30 @@
                         if (typeof callback === 'function') {
                             callback()
                         } else {
+                            let title = ''
+                            switch(actionType) {
+                                case this.SCHEDULE_RESUME:
+                                title = '恢复'
+                                break;
+                                case this.SCHEDULE_RUN:
+                                title = '运行'
+                                break;
+                                case this.SCHEDULE_PAUSE:
+                                title = '暂停'
+                                break;
+                                case this.DELETE_SCHEDULE:
+                                title = '删除'
+                                break;
+                            }
                             this.$Notice.success({
-                                title: '批量处理成功！'
+                                title: '成功',
+                                desc: `批量${title}已处理！`
                             })
                         }
                     } else {
                         this.$Notice.error({
-                            title: msg
+                            title: '错误',
+                            desc: msg
                         })
                     }
                 })

@@ -58,14 +58,16 @@
                                 const { code, msg } = data
                                 if (code === 0) {
                                     d.delLaoding = false
-                                    this.$Notice.warning({
-                                        title: '删除成功!'
+                                    this.$Notice.success({
+                                        title: '成功',
+                                        desc: '删除成功!'
                                     })
                                     this.GET_MENU_LIST()
                                 } else {
                                     d.delLaoding = false
-                                    this.$Notice.warning({
-                                        title: msg
+                                    this.$Notice.error({
+                                        title: '错误',
+                                        desc: msg
                                     })
                                 }
                             })
@@ -81,13 +83,15 @@
                        if (code === 0) {
                            this.showModal = false
                             this.$Notice.success({
-                                title: '菜单添加成功！'
+                                title: '成功',
+                                desc: '菜单添加成功！'
                             })
                             this.GET_MENU_LIST()
                        } else {
                             this.$refs['modal'].cancelLoading()
                             this.$Notice.error({
-                                title: msg
+                                title: '错误',
+                                desc: msg
                             })
                        }
                    })
@@ -97,13 +101,15 @@
                        if (code === 0) {
                            this.showModal = false
                             this.$Notice.success({
-                                title: '菜单修改成功！'
+                                title: '成功',
+                                desc: '菜单修改成功！'
                             })
                             this.GET_MENU_LIST()
                        } else {
                             this.$refs['modal'].cancelLoading()
                             this.$Notice.error({
-                                title: msg
+                                title: '错误',
+                                desc: msg
                             })
                        }
                    })

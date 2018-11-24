@@ -81,7 +81,7 @@ export default {
         LOGIN({commit}, data) {
             const { username } = data
             const response = http({
-                method: "post",
+                method: 'post',
                 url: '/sys/login',
                 data
             })
@@ -113,7 +113,7 @@ export default {
         },
         // 获取管理员列表
         GET_ADMIN_LIST({commit}, data = {}) {
-            const { page = 1, limit = 10, sidx = 'userId', order = "asc", username = "" } = data
+            const { page = 1, limit = 10, sidx = 'userId', order = 'asc', username = '' } = data
             return http.get('/sys/user/list', {
                 params: {
                     page,
@@ -378,9 +378,9 @@ export default {
         ADD_CONFIG({commit}, data = {}) {
             const { 
                 id = 0,
-                paramKey = "",
-                paramValue = "",
-                remark = ""
+                paramKey = '',
+                paramValue = '',
+                remark = ''
             } = data
             return  http.post('/sys/config/save', {
                 id,
@@ -393,9 +393,9 @@ export default {
         UPDATE_CONFIG({commit}, data = {}) {
             const { 
                 id = 0,
-                paramKey = "",
-                paramValue = "",
-                remark = ""
+                paramKey = '',
+                paramValue = '',
+                remark = ''
             } = data
             return  http.post('/sys/config/update', {
                 id,
@@ -407,7 +407,71 @@ export default {
         // 删除参数管理
         DELETE_CONFIG({commit}, id = []) {
             return http.post('/sys/config/delete', id)
+        },
+        // 获取云存储配置信息
+        GET_OSS_CONFIG({commit}, ) {
+            return http.get('/sys/oss/config')
+        },
+        // 获取云文件列表
+        GET_OSS_LIST({commit}, params = {}) {
+            const { page = 1, limit = 10, sidx = 'id', order ='desc' } = params
+            return http.get('/sys/oss/list', {
+                params: {
+                    page,
+                    limit,
+                    sidx,
+                    order
+                }
+            })
+        },
+        // 保存云存储配置信息
+        SAVE_OSS_CONFIG({commit}, data = {}) {
+            const { 
+                type = 1,
+                qiniuDomain = '',
+                qiniuPrefix = '',
+                qiniuAccessKey = '',
+                qiniuSecretKey = '',
+                qiniuBucketName = '',
+                aliyunDomain = '',
+                aliyunPrefix = '',
+                aliyunEndPoint = '',
+                aliyunAccessKeyId = '',
+                aliyunAccessKeySecret = '',
+                aliyunBucketName = '',
+                qcloudDomain = '',
+                qcloudPrefix = '',
+                qcloudAppId = '',
+                qcloudSecretId = '',
+                qcloudSecretKey = '',
+                qcloudBucketName = '',
+                qcloudRegion = '' 
+            } = data
+            return http.post('/sys/oss/saveConfig', {
+                type,
+                qiniuDomain,
+                qiniuPrefix,
+                qiniuAccessKey,
+                qiniuSecretKey,
+                qiniuBucketName,
+                aliyunDomain,
+                aliyunPrefix,
+                aliyunEndPoint,
+                aliyunAccessKeyId,
+                aliyunAccessKeySecret,
+                aliyunBucketName,
+                qcloudDomain,
+                qcloudPrefix,
+                qcloudAppId,
+                qcloudSecretId,
+                qcloudSecretKey,
+                qcloudBucketName,
+                qcloudRegion
+            })
+        },
+        // 删除云文件
+        OSS_DELETE({commit}, ids = []) {
+            return http.post('/sys/oss/delete', ids)
         }
-
     }
 }

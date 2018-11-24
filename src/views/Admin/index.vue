@@ -156,7 +156,8 @@ export default {
                     })
                 } else {
                     this.$Notice.error({
-                        title: msg
+                        title: '错误',
+                        desc: msg
                     })
                     this.$refs['changepassword'].clearLoading()
                 }

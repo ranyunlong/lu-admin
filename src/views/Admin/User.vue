@@ -77,13 +77,13 @@
                                                     this.data[params.index].status = e
                                                     if (e === 1) {
                                                         this.$Notice.success({
-                                                            title: `管理员${params.row.username} 已启用`,
-                                                            desc: false
+                                                            title: '成功',
+                                                            desc: `管理员${params.row.username} 已启用`
                                                         }) 
                                                     } else {
-                                                        this.$Notice.warning({
-                                                            title: `管理员${params.row.username} 已禁用`,
-                                                            desc: false
+                                                        this.$Notice.success({
+                                                            title: '成功',
+                                                            desc:  `管理员${params.row.username} 已禁用`
                                                         }) 
                                                     }
                                                     
@@ -144,14 +144,16 @@
                                                 const { code, msg} = data
                                                 if (code === 0) {
                                                     this.data[params.index].loading = false
-                                                    this.$Notice.warning({
-                                                        title: params.row.username + '已删除!'
+                                                    this.$Notice.success({
+                                                        title: '成功',
+                                                        desc: params.row.username + '已删除!'
                                                     })
                                                     this.getAdminList()
                                                 } else {
                                                     this.data[params.index].loading = false
                                                     this.$Notice.error({
-                                                        title: msg
+                                                        title: '错误',
+                                                        desc: msg
                                                     })
                                                 }
                                             }).catch(err => console.log(err))
@@ -216,10 +218,15 @@
                         if (code === 0) {
                             this.showModal = false
                             this.getAdminList()
+                            this.$Notice.success({
+                                title: '成功',
+                                desc: '添加成功'
+                            })
                         } else {
                             this.$refs['modal'].cancelLoading()
                             this.$Notice.error({
-                                title: msg
+                                title: '错误',
+                                desc: msg
                             })
                         }
                     }).catch(err => console.log(err))
@@ -230,12 +237,14 @@
                             this.showModal = false
                             this.getAdminList()
                              this.$Notice.success({
-                                title: '操作成功'
+                                title: '成功',
+                                desc: '操作成功'
                             })
                         } else {
                             this.$refs['modal'].cancelLoading()
                             this.$Notice.error({
-                                title: msg
+                                title: '错误',
+                                desc: msg
                             })
                         }
                     }).catch(err => console.log(err))
@@ -269,7 +278,8 @@
                 const deletes = this.tableSelection.map(k => k.userId)
                 if (!!~deletes.indexOf(1)) {
                     return this.$Notice.warning({
-                        title: '超级管理员，不能删除！'
+                        title: '警告',
+                        desc: '超级管理员，不能删除！'
                     })
                 }
                 if (deletes.length === 0) return;
@@ -278,14 +288,16 @@
                     const { code, message} = data
                     if(code === 0) {
                         this.$Notice.success({
-                            title: '批量删除操作成功！'
+                            title: '成功',
+                            desc: '批量删除操作成功！'
                         })
                         this.getAdminList()
                         this.deleteLoadingState = false
                     } else {
                         this.deleteLoadingState = false
                         this.$Notice.error({
-                            title: '批量删除操作失败！'
+                            title: '错误',
+                            desc: '批量删除操作失败！'
                         })
                     }
                 })

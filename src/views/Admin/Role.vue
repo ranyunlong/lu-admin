@@ -104,13 +104,15 @@
                                                 if (code === 0) {
                                                     this.data[params.index].loading = false
                                                     this.$Notice.warning({
-                                                        title: params.row.roleName + '已删除!'
+                                                        title: '成功',
+                                                        desc: params.row.roleName + '已删除!'
                                                     })
                                                     this.getRoleList()
                                                 } else {
                                                     this.data[params.index].loading = false
                                                     this.$Notice.error({
-                                                        title: msg
+                                                        title: '错误',
+                                                        desc: msg
                                                     })
                                                 }
                                             })
@@ -178,13 +180,15 @@
                     if (code === 0) {
                         this.deleteLoadingState = true
                         this.$Notice.warning({
-                            title: '批量删除成功!'
+                            title: '成功',
+                            desc: '批量删除成功!'
                         })
                         this.getRoleList()
                     } else {
                         this.deleteLoadingState = true
                         this.$Notice.error({
-                            title: msg
+                            title: '错误',
+                            desc: msg
                         })
                     }
                 })
@@ -198,12 +202,14 @@
                             this.showModal = false
                             this.getRoleList()
                             this.$Notice.success({
-                                title: '角色添加成功！'
+                                title: '成功',
+                                desc: '角色添加成功！'
                             })
                         } else {
                             this.$refs['modal'].cancelLoading()
                             this.$Notice.error({
-                                title: msg
+                                title:'错误',
+                                desc: msg
                             })
                         }
                     }).catch(err => console.log(err))
@@ -214,12 +220,14 @@
                             this.showModal = false
                             this.getRoleList()
                             this.$Notice.success({
-                                title: '角色修改成功！'
+                                title: '成功',
+                                desc: '角色修改成功！'
                             })
                         }  else {
                             this.$refs['modal'].cancelLoading()
                             this.$Notice.error({
-                                title: msg
+                                title: '错误',
+                                desc: msg
                             })
                         }
                     })

@@ -107,12 +107,14 @@
                                                 const { code, msg } = data
                                                 if (code === 0) {
                                                     this.$Notice.success({
-                                                        title: '删除成功！'
+                                                        title: '成功',
+                                                        desc: '已删除！'
                                                     })
                                                     return this.getConfigList()
                                                 }
                                                 this.$Notice.error({
-                                                    title: msg
+                                                    title: '错误',
+                                                    desc: msg
                                                 })
                                                 this.data[params.index].loading = false
                                             })
@@ -139,11 +141,13 @@
                                 this.showModal = false
                                 this.getConfigList()
                                 this.$Notice.success({
-                                    title: '参数配置添加成功！'
+                                    title: '成功',
+                                    desc: '参数配置已添加！'
                                 })
                             } else {
                                 this.$Notice.error({
-                                    title: msg
+                                    title: '错误',
+                                    desc: msg
                                 })
                                 this.$refs['modal'].clearLoading()
                             }
@@ -155,11 +159,13 @@
                                 this.showModal = false
                                 this.getConfigList()
                                 this.$Notice.success({
-                                    title: '参数配置添加成功！'
+                                    title: '成功',
+                                    desc: '参数配置已修改！'
                                 })
                             } else {
                                 this.$Notice.error({
-                                    title: msg
+                                    title: '错误',
+                                    desc: msg
                                 })
                                 this.$refs['modal'].clearLoading()
                             }
@@ -192,12 +198,14 @@
                         const { code, msg } = data
                         if (code === 0) {
                             this.$Notice.success({
-                                title: '批量删除成功！'
+                                title: '成功',
+                                desc: '批量删除成功！'
                             })
                             return this.getConfigList()
                         }
                         this.$Notice.error({
-                            title: msg
+                            title: '错误',
+                            desc: msg
                         })
                     })
                 
