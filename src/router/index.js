@@ -32,6 +32,10 @@ export const adminModules = [{
   id: 6,
   name: '参数管理模块',
   component: $import('Admin/Config')
+}, {
+  id: 7,
+  name: '上传管理模块',
+  component: $import('Admin/Oss')
 }]
 
 // 路由是否准备好
