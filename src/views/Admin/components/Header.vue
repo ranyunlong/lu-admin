@@ -68,6 +68,9 @@
                     this.LOG_OUT()
                     this.$router.push('/login')
                 }
+                if (name === 'changePassword') {
+                    this.$emit('changePassword')
+                }
             },
             ...system.mapActions([
                 'LOG_OUT'

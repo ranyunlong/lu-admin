@@ -52,6 +52,11 @@ export default {
         }
     },
     actions: {
+        // 修改密码
+        CHANGE_PASSWORD({commit}, data = {}) {
+            const { password = '', newPassword = '' } = data
+            return http.post('/sys/user/password', data)
+        },
         // 获取菜单列表
         GET_MENU_LIST({commit}) {
             const response = http.get('/sys/menu/list')

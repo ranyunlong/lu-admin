@@ -1,6 +1,6 @@
 <template>
     <Layout class="layout">
-        <MHeader v-model="isFold">
+        <MHeader v-model="isFold" @changePassword="showChangePasswordModal = true">
         </MHeader>
         <Layout>
             <Sider 
@@ -51,26 +51,28 @@
                     </keep-alive>
                 </Layout>
             </Content>
+            <ChangePasswordModal ref="changepassword" v-model="showChangePasswordModal" @ok="handleChangePassword" title="修改密码" />
         </Layout>
     </Layout>
 </template>
 
 <script>
 import MHeader from './components/Header'
+import ChangePasswordModal from './components/ChangePasswordModal'
 import { createNamespacedHelpers } from 'vuex'
 const system = createNamespacedHelpers('system')
 export default {
     data() {
         return {
-            isFold: false,
-            username: 'admin',
-            tabTags: [],
-            tabActiveName: '',
-            menuActiveName: 'home',
-            menuOpenNames: [],
-            contextMenuShow: false,
-            contextMenuX: 0,
-            contextMenuY: 0
+            isFold: false,                      // 菜单是否展开
+            tabTags: [],                        // tab 已打开列表
+            tabActiveName: '',                  // tab 选项卡 激活名称
+            menuActiveName: 'home',             // 菜单激活名称
+            menuOpenNames: [],                  // 菜单打开的名称列表
+            contextMenuShow: false,             // tab 选项卡右键菜单显示状态
+            contextMenuX: 0,                    // tab 选项卡右键菜单 X 坐标
+            contextMenuY: 0,                    // tab 选项卡右键菜单 Y 坐标
+            showChangePasswordModal: false      // 修改密码模态框显示在状态
         }
     },
     created() {
@@ -118,7 +120,9 @@ export default {
     methods: {
         ...system.mapActions([
             'GET_USER_INFO',
-            'GET_MENU_LIST'
+            'GET_MENU_LIST',
+            'CHANGE_PASSWORD',
+            'LOG_OUT'
         ]),
         // 选择菜单
         selectMenu(menuId) {
@@ -138,6 +142,27 @@ export default {
         handleTabRemove(name) {
             this.tabTags = this.tabTags.filter(k => k.name !== name)
         },
+        handleChangePassword(data) {
+            this.CHANGE_PASSWORD(data).then(({data}) => {
+                const { code, msg } = data
+                if (code === 0) {
+                    this.$Modal.info({
+                        title: '成功',
+                        content: '密码修改成功,现在跳转至登陆页面重新登陆',
+                        onOk: () => {
+                            this.LOG_OUT()
+                            this.$router.push('/login')
+                        }
+                    })
+                } else {
+                    this.$Notice.error({
+                        title: msg
+                    })
+                    this.$refs['changepassword'].clearLoading()
+                }
+            })
+        },
+        // tab选项卡关闭左侧
         closeTabBefore() {
             let index = null
             const active = this.tabTags.find((k, i) => {
@@ -150,6 +175,7 @@ export default {
                 this.tabTags = this.tabTags.filter((k, i) => i >= index)
             }
         },
+        // tab选项卡 关闭右侧
         closeTabAfter() {
             let index = null
             const active = this.tabTags.find((k, i) => {
@@ -162,12 +188,14 @@ export default {
                 this.tabTags = this.tabTags.filter((k, i) => i <= index)
             }
         },
+        // tab选项卡 关闭其他
         closeTabOther() {
             const active = this.tabTags.find(k => k.name === this.tabActiveName)
             if (active) {
                 this.tabTags = this.tabTags.filter(k => k.name === active.name)
             }
         },
+        // tab选修课 右键菜单
         contextmenu(e) {
             const l = this.$refs['tab-bar'].offsetLeft
             const t = this.$refs['tab-bar'].offsetTop
@@ -187,7 +215,8 @@ export default {
         }
     },
     components: {
-        MHeader
+        MHeader,
+        ChangePasswordModal
     }
 };
 
