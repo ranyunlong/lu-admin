@@ -46,7 +46,9 @@
                     </ContextMenu>
                 </a>
                 <Layout class="route-view">
-                    <router-view />
+                    <keep-alive>
+                        <router-view />
+                    </keep-alive>
                 </Layout>
             </Content>
         </Layout>

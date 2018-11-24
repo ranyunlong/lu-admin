@@ -57,6 +57,7 @@
                             return h('Checkbox',{
                                 on: {
                                     'on-change': (e) => {
+                                        console.log(params)
                                         this.data.forEach(k => k.selected = e)
                                     }
                                 }

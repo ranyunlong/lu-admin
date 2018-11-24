@@ -41,6 +41,9 @@
                 actionType: '',
                 columns: [
                     {
+                        type: 'selection'
+                    },
+                    {
                         title: 'ID',
                         key: 'id',
                         align: 'center',
@@ -49,12 +52,12 @@
                     },
                     {
                         title: '参数名',
-                        key: 'key',
+                        key: 'paramKey',
                         align: 'center',
                     },
                     {
                         title: '参数值',
-                        key: 'value',
+                        key: 'paramValue',
                         align: 'center',
                     },
                     {
@@ -75,7 +78,6 @@
         methods: {
             handlerAction(postData) {
                 if(this.actionType === 'add') {
-                    console.log(postData)
                     this.ADD_CONFIG(postData).then(({data}) => {
                         const { code, msg } = data
                         if (code === 0) {
@@ -114,7 +116,7 @@
                 this.GET_CONFIG_LIST({
                     page: this.currPage,
                     limit: this.limit,
-                    key: this.search
+                    paramKey: this.search
                 }).then(({data}) => {
                     const { code, msg, page } = data
                     if (code === 0) {
@@ -132,6 +134,17 @@
                 'UPDATE_CONFIG',
                 'DELETE_CONFIG'
             ])
+        },
+        watch: {
+            currPage() {
+                this.getConfigList()
+            },
+            limit() {
+                this.getConfigList()
+            },
+            search() {
+                this.getConfigList()
+            }
         },
         components:{ ConfigFormModal }
     }

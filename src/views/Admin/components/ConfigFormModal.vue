@@ -15,11 +15,11 @@
             :model="form" 
             style="width: 85%" 
             :label-width="100">
-            <FormItem prop="key" label="参数名">
-                <Input v-model="form.key" placeholder="参数名" />
+            <FormItem prop="paramKey" label="参数名">
+                <Input v-model="form.paramKey" placeholder="参数名" />
             </FormItem>
-            <FormItem prop="value" label="参数值">
-                <Input v-model="form.value" placeholder="参数值" />
+            <FormItem prop="paramValue" label="参数值">
+                <Input v-model="form.paramValue" placeholder="参数值" />
             </FormItem>
             <FormItem prop="remark" label="备注">
                 <Input v-model="form.remark" placeholder="备注" />
@@ -45,10 +45,10 @@
                     remark: ''
                 },
                 formRule: {
-                    key: [
+                    paramKey: [
                         { required: true, message: '名称必须', trigger: 'blur' },
                     ],
-                    value: [
+                    paramValue: [
                         { required: true, message: '参数值必须', trigger: 'blur' },
                     ],
                 }
@@ -58,8 +58,8 @@
             init() {
                 this.form = {
                     id: 0,
-                    key: '',
-                    value: '',
+                    paramKey: '',
+                    paramValue: '',
                     remark: ''
                 }
                 this.loading = false

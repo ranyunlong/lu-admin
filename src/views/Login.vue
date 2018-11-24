@@ -40,7 +40,10 @@
                     <div style="clear:both;"></div>
                 </FormItem>
                 <FormItem>
-                    <Button type="primary" long @click="login">登陆</Button>
+                    <Button :loading="loading" type="primary" long @click="login">
+                        <span v-if="loading">登录中</span>
+                        <span v-else>登陆</span>
+                    </Button>
                 </FormItem>
             </Form>
         </Content>
@@ -85,6 +88,11 @@ export default {
     beforeDestroy() {
         document.removeEventListener('keydown', this.login)
     },
+    computed: {
+        ...system.mapGetters([
+            'user'
+        ])
+    },
     methods: {
         // 刷新验证码
         reFreshcaptcha() {
@@ -120,7 +128,6 @@ export default {
                             this.$router.push({
                                 path: '/admin'
                             })
-                            document.removeEventListener('keydown', this.login)
                         }
                     })
                 }

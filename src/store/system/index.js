@@ -373,14 +373,14 @@ export default {
         ADD_CONFIG({commit}, data = {}) {
             const { 
                 id = 0,
-                key = "",
-                value = "",
+                paramKey = "",
+                paramValue = "",
                 remark = ""
             } = data
             return  http.post('/sys/config/save', {
                 id,
-                key,
-                value,
+                paramKey,
+                paramValue,
                 remark
             })
         },
@@ -388,14 +388,14 @@ export default {
         UPDATE_CONFIG({commit}) {
             const { 
                 id = 0,
-                key = "",
-                value = "",
+                paramKey = "",
+                paramValue = "",
                 remark = ""
             } = data
             return  http.post('/sys/config/update', {
                 id,
-                key,
-                value,
+                paramKey,
+                paramValue,
                 remark
             })
         },

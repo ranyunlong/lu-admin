@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import $import from './import'
 import store from '@/store'
 import { http } from '@/utils'
+import { format } from 'upath';
 
 Vue.use(Router)
 
@@ -47,6 +48,9 @@ const mainRoutes = [
   {
     path: '/login',
     name: 'Login',
+    meta: {
+      auth_repeat_login: true
+    },
     component: $import('Login')
   }
 ]
@@ -79,7 +83,7 @@ const router = new Router({
   ]
 })
 
-function getMenuList(to, next) {
+function getMenuList(callback) {
   store.dispatch('system/GET_MENU_LIST').then(({data}) => {
     if (Array.isArray(data)) {
       data.forEach(k => {
@@ -101,8 +105,7 @@ function getMenuList(to, next) {
         path: '*',
         redirect: { name: '404' }
       }])
-      isReady = true
-      next({...to, replace: true})
+      if (typeof callback === 'function') callback()
     }
   })
 }
@@ -116,7 +119,10 @@ router.beforeEach((to, from, next) => {
     if (!isReady) {
       // 判断是否已登录，如果已登录获取管理菜单，否则去登录
       if (username && token) {
-        return getMenuList(to, next)
+        return getMenuList(function() {
+          isReady = true
+          next({...to, replace: true})
+        })
       }
       return next('/login')
     }
@@ -126,6 +132,11 @@ router.beforeEach((to, from, next) => {
       return next()
     } 
     return next('/login')
+  } else if (to.meta.auth_repeat_login) {
+    if (username && token) {
+      return router.push('/admin')
+    } 
+    next()
   } else {
     return next()
   }
