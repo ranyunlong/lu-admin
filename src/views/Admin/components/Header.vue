@@ -15,9 +15,9 @@
             </div>
             <div class="right">
                 <div class="tools">
-                    <Icon title="主题设置" type="md-color-palette" size="26" />
+                    <!-- <Icon title="主题设置" type="md-color-palette" size="26" /> -->
                     <Badge dot>
-                        <Icon title="最新动态" type="ios-notifications-outline" size="26"></Icon>
+                        <Icon title="消息提醒" type="ios-notifications-outline" size="26"></Icon>
                     </Badge>
                 </div>
                 <div class="user">

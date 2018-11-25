@@ -4,10 +4,12 @@
         :style="{
             width: getSize,
             height: getSize,
+            lineHeight: getSize,
             backgroundColor: color
         }"
         >
-        <img v-show="src" :src="src">
+        <img v-if="src" :src="src">
+        <Icon v-else :size="size / 2" type="md-person" />
     </div>
 </template>
 
@@ -38,5 +40,6 @@
         user-select: none;
         display: inline-block;
         border-radius: 50%;
+        text-align: center;
     }
 </style>
