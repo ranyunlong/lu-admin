@@ -77,6 +77,7 @@ const mainRoutes = [
 }
 
 const router = new Router({
+  mode: 'history',
   routes: [
     ...mainRoutes,
     {
