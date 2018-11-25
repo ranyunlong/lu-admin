@@ -99,6 +99,7 @@
                 })
             },
             search() {
+                this.currPage = 1
                 this.getLogList({
                     page: this.currPage,
                     limit: this.limit,

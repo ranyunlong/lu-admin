@@ -130,6 +130,7 @@
                 if (v) this.getList() 
             },
             search() {
+                this.currPage = 1
                 this.getList()
             },
             limit() {

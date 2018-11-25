@@ -10,6 +10,7 @@
     const system = createNamespacedHelpers('system')
     import MenuListItem from './components/MenuListItem'
     import MenuFormModal from './components/MenuFormModal'
+    const iMenu = {}
     export default {
         data() {
             return {
@@ -137,6 +138,7 @@
                 }
                 deep(menu)
                 return [{
+                    menuId: 0,
                     expand: true,
                     name: '网站',
                     type: -1,

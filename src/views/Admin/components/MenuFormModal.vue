@@ -120,9 +120,6 @@
                 formRule: {
                     name: [
                         { required: true, message: '名称必须', trigger: 'blur' },
-                    ],
-                    icon: [
-                        { required: true, message: '图标必须', trigger: 'blur' },
                     ]
                 }
             }

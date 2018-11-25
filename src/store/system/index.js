@@ -65,6 +65,7 @@ export default {
                     const menus = data
                     const menu = menus.filter((k) => k.parentId === 0)
                     function deep(arr) {
+                        if (!Array.isArray(arr)) return;
                         arr.forEach((k) => {
                             k.children = menus.filter(v => v.parentId === k.menuId)
                             deep(k.children)

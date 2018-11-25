@@ -1,5 +1,5 @@
 <template>
-    <div class="menu-list-item">
+    <div ref="item" class="menu-list-item">
         <div class="content" @click.self="expand">
             <div class="title" @click="expand">
                 <Icon v-if="/(0|1|-1)/.test(value.type)" style="margin-top: -4px;margin-right:8px" :size="20" :type="value.expand ? 'ios-folder-open' : 'ios-folder'" />
@@ -37,10 +37,28 @@
             value: Object,
             deleteLoading: false
         },
+        watch: {
+            value(v) {
+                const el = this.$refs['item']
+                if (el.expand) {
+                    this.value.expand = el.expand
+                }
+            }
+        },
+        mounted() {
+            const el = this.$refs['item']
+            if (typeof el.expand === 'undefined') {
+                el.expand = this.value.expand
+                el.setAttribute('expand', this.value.expand)
+            }
+        },
         methods: {
             expand() {
                 if (this.value.children.length > 0) {
                     this.value.expand = !this.value.expand
+                    const el = this.$refs['item']
+                    el.expand = this.value.expand
+                    el.setAttribute('expand', this.value.expand)
                 }
             },
             handlerAdd() {
