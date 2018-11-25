@@ -8,7 +8,7 @@ import iview from 'iview'
 import store from './store'
 import VueCookie from 'vue-cookie'
 import utils from './utils'
-import 'iview/dist/styles/iview.css'
+// import 'iview/dist/styles/iview.css'
 import commonComponents from './components/common'
 
 Vue.use(VueCookie)

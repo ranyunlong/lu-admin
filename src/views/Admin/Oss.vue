@@ -1,15 +1,14 @@
 <template>
     <Layout style="background: #fff;">
         <div class="top-bar">
-            <Input style="width: 200px;" clearable v-model="search" search placeholder="地址" />
             <Button type="primary" @click="showModal = true">云存储配置</Button>
             <Button type="success" @click="showUploadModal = true" icon="md-cloud-upload">上传文件</Button>
         </div>
         <div class="content">
-            <Table highlight-row stripe border size="small" no-data-text="暂无上传文件" :columns="columns" :loading="loading" :data="data"></Table>
+            <Table  @on-selection-change="d => tableSelection = d" highlight-row stripe border size="small" no-data-text="暂无上传文件" :columns="columns" :loading="loading" :data="data"></Table>
         </div>
         <div class="bottom-bar">
-            <Button type="error">批量删除</Button>
+            <Button type="error" @click="deleteMany">批量删除</Button>
             <Page :page-size-opts="[5, 10]"  @on-page-size-change="e => limit = e" :total="totalCount" :current.sync="currPage" size="small" show-elevator show-sizer />
         </div>
         <Modal
@@ -131,7 +130,6 @@
     export default {
         data() {
             return {
-                search: '',             // 搜索框值
                 loading: false,         // 异步loading状态
                 data: [],               // 表格数据
                 limit: 10,              // 查询条数限制
@@ -141,6 +139,7 @@
                 tabName: 'qiniu',       // 模态框tabName
                 modalLoading: false,    // 模态框Loading状态
                 showUploadModal: false, // 上传模态框显示状态
+                tableSelection: [],     // 表格多选状态
                 form: {                 // 表单
                     type: 1,
                     qiniuDomain: "",
@@ -177,18 +176,56 @@
                     {
                         title: 'URL地址',
                         key: 'url',
+                        tooltip: true,
                         align: 'center',
                         sortable: true
                     },
                     {
                         title: '创建时间',
-                        key: 'createTime',
+                        key: 'createDate',
                         align: 'center',
-                        sortable: true
+                        sortable: true,
+                        width: 150
                     },
                     {
                         title: '操作',
-                        align: 'center'
+                        align: 'center',
+                        width: 80,
+                        render: (h, params) => {
+                            return h('Button',{
+                                props: {
+                                    type: 'error',
+                                    size: 'small'
+                                },
+                                on: {
+                                    click:() => {
+                                        this.$Modal.confirm({
+                                            title: '提示',
+                                            content: `您正在删除文件id: <b>${params.row.id}</b>, 确认删除吗？`,
+                                            loading: true,
+                                            onOk: () => {
+                                                this.OSS_DELETE([params.row.id]).then(({data})=> {
+                                                    const { code, msg } = data
+                                                    if (code === 0) {
+                                                        this.$Notice.success({
+                                                            title: '成功',
+                                                            desc: `已删除!`
+                                                        })
+                                                        this.getOssList()
+                                                        return this.$Modal.remove()
+                                                    }
+                                                    this.$Modal.remove()
+                                                    return this.$Notice.error({
+                                                        title: '错误',
+                                                        desc: msg
+                                                    })
+                                                })
+                                            }
+                                        })
+                                    }
+                                }
+                            },'删除')
+                        } 
                     }
                 ]
             }
@@ -206,10 +243,13 @@
                 switch(v) {
                     case 'qiniu':
                     this.form.type = 1
+                    break;
                     case 'aliyun':
                     this.form.type = 2
+                    break;
                     case 'qcloud':
                     this.form.type = 3
+                    break;
                 }
             },
             form(v) {
@@ -224,6 +264,9 @@
                         this.tabName = 'qcloud'
                     }
                 }
+            },
+            showUploadModal(v) {
+                if (v) this.$refs['upload'].clearFiles()
             }
         },
         created() {
@@ -259,6 +302,38 @@
             handlerUploadError(error, file, fileList) {
                  console.log(1)
                 console.log(error)
+            },
+            deleteMany() {
+                const deletes = this.tableSelection.map(k => k.id)
+                if (deletes.length > 0) {
+                    return this.$Modal.confirm({
+                        title: '提示',
+                        content: `您正在批量删除文件,确认删除吗？`,
+                        loading: true,
+                        onOk: () => {
+                            this.OSS_DELETE(deletes).then(({data})=> {
+                                const { code, msg } = data
+                                if (code === 0) {
+                                    this.$Notice.success({
+                                        title: '成功',
+                                        desc: `已删除!`
+                                    })
+                                    this.getOssList()
+                                    return this.$Modal.remove()
+                                }
+                                this.$Modal.remove()
+                                return this.$Notice.error({
+                                    title: '错误',
+                                    desc: msg
+                                })
+                            })
+                        }
+                    })
+                }
+                this.$Notice.error({
+                    title: '错误',
+                    desc: '请选择要删除的数据!'
+                })
             },
             // 获取上传文件列表
             getOssList() {

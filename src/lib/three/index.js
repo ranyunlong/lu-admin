@@ -1,6 +1,4 @@
-const { THREE } = require('./three.min')
-
-// console.log(THREE)
+const THREE = require('three')
 
 THREE.CopyShader = {
 
