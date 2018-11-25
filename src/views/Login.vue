@@ -1,6 +1,6 @@
 <template>
     <Layout class="login">
-        <Content class="content">
+        <Content ref="content" class="content">
             
         </Content>
         <Content class="login-box">
@@ -54,6 +54,7 @@
 import uuid from 'uuid/v4'
 import { createNamespacedHelpers } from 'vuex'
 const system = createNamespacedHelpers('system')
+import background from '@/lib/loginBackground'
 export default {
     data() {
         return {
@@ -84,6 +85,7 @@ export default {
     },
     mounted() {
         document.addEventListener('keydown', this.login)
+        background(this.$refs.content.$el)
     },
     beforeDestroy() {
         document.removeEventListener('keydown', this.login)

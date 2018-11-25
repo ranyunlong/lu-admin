@@ -6300,6 +6300,11 @@ tar@^4:
     safe-buffer "^5.1.2"
     yallist "^3.0.2"
 
+three@^0.98.0:
+  version "0.98.0"
+  resolved "http://registry.npm.taobao.org/three/download/three-0.98.0.tgz#11d4e3cca4b5d099c7de0ea5afa153b5d20cda84"
+  integrity sha1-EdTjzKS10JnH3g6lr6FTtdIM2oQ=
+
 through2@^2.0.0:
   version "2.0.5"
   resolved "http://registry.npm.taobao.org/through2/download/through2-2.0.5.tgz#01c1e39eb31d07cb7d03a96a70823260b23132cd"
