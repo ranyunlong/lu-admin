@@ -109,9 +109,8 @@
                 show-upload-list
                 with-credentials
                 paste
-                @on-progress="handlerUploadSuccess"
-                @on-success="handlerUploadSuccess"
-                @on-error="handlerUploadError"
+                :on-success="handlerUploadSuccess"
+                :on-error="handlerUploadError"
                 action="/api/sys/oss/upload">
                 <div style="padding: 20px 0">
                     <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
@@ -243,9 +242,22 @@
                 'OSS_DELETE'
             ]),
             handlerUploadSuccess(response, file, fileList) {
-                console.log(response)
+                const { code, msg } = response
+                if (code === 500) {
+                    fileList.splice(fileList.indexOf(file), 1)
+                    return this.$Notice.error({
+                        title: '错误',
+                        desc: msg
+                    })
+                }
+                this.$Notice.success({
+                    title: '成功',
+                    desc: '文件已上传！'
+                })
+                this.getOssList()
             },
             handlerUploadError(error, file, fileList) {
+                 console.log(1)
                 console.log(error)
             },
             // 获取上传文件列表
