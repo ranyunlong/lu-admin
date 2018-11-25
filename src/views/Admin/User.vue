@@ -139,24 +139,30 @@
                                     },
                                     on: {
                                         click:(e) => {
-                                            this.$set(this.data[params.index], 'loading', true)
-                                            this.DELETE_ADMIN([params.row.userId]).then(({data}) => {
-                                                const { code, msg} = data
-                                                if (code === 0) {
-                                                    this.data[params.index].loading = false
-                                                    this.$Notice.success({
-                                                        title: '成功',
-                                                        desc: params.row.username + '已删除!'
-                                                    })
-                                                    this.getAdminList()
-                                                } else {
-                                                    this.data[params.index].loading = false
-                                                    this.$Notice.error({
-                                                        title: '错误',
-                                                        desc: msg
-                                                    })
+                                            this.$Modal.confirm({
+                                                title: '提示',
+                                                content: `您正在删除管理员 <b>${params.row.username}</b> , 是否确认删除？`,
+                                                onOk: () => {
+                                                    this.$set(this.data[params.index], 'loading', true)
+                                                    this.DELETE_ADMIN([params.row.userId]).then(({data}) => {
+                                                        const { code, msg} = data
+                                                        if (code === 0) {
+                                                            this.data[params.index].loading = false
+                                                            this.$Notice.success({
+                                                                title: '成功',
+                                                                desc: `管理员 ${params.row.username} 已删除!`
+                                                            })
+                                                            this.getAdminList()
+                                                        } else {
+                                                            this.data[params.index].loading = false
+                                                            this.$Notice.error({
+                                                                title: '错误',
+                                                                desc: msg
+                                                            })
+                                                        }
+                                                    }).catch(err => console.log(err))
                                                 }
-                                            }).catch(err => console.log(err))
+                                            })
                                         }
                                     }
                                 },'删除')
@@ -220,7 +226,7 @@
                             this.getAdminList()
                             this.$Notice.success({
                                 title: '成功',
-                                desc: '添加成功'
+                                desc: `管理员 ${postData.username} 已添加!`
                             })
                         } else {
                             this.$refs['modal'].cancelLoading()
@@ -238,7 +244,7 @@
                             this.getAdminList()
                              this.$Notice.success({
                                 title: '成功',
-                                desc: '操作成功'
+                                desc: `管理员 ${postData.username} 已修改!`
                             })
                         } else {
                             this.$refs['modal'].cancelLoading()
@@ -282,23 +288,34 @@
                         desc: '超级管理员，不能删除！'
                     })
                 }
-                if (deletes.length === 0) return;
-                this.deleteLoadingState = true
-                this.DELETE_ADMIN(deletes).then(({data}) => {
-                    const { code, message} = data
-                    if(code === 0) {
-                        this.$Notice.success({
-                            title: '成功',
-                            desc: '批量删除操作成功！'
-                        })
-                        this.getAdminList()
-                        this.deleteLoadingState = false
-                    } else {
-                        this.deleteLoadingState = false
-                        this.$Notice.error({
-                            title: '错误',
-                            desc: '批量删除操作失败！'
-                        })
+                if (deletes.length === 0) {
+                    return this.$Notice.error({
+                        title: '错误',
+                        desc: '请选择要批量删除的数据！'
+                    })
+                }
+                this.$Modal.confirm({
+                    title: '提示',
+                    content: `您正在删除管理员 ${this.tableSelection.map(k => `<b>${k.username}</b>`).join('，')}, 确认删除吗？`,
+                    onOk: () => {
+                        this.deleteLoadingState = true
+                        this.DELETE_ADMIN(deletes).then(({data}) => {
+                            const { code, message} = data
+                            if(code === 0) {
+                                this.$Notice.success({
+                                    title: '成功',
+                                    desc: '批量删除操作成功！'
+                                })
+                                this.getAdminList()
+                                this.deleteLoadingState = false
+                            } else {
+                                this.deleteLoadingState = false
+                                this.$Notice.error({
+                                    title: '错误',
+                                    desc: '批量删除操作失败！'
+                                })
+                            }
+                        })      
                     }
                 })
             }

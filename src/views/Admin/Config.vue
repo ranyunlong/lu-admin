@@ -102,21 +102,27 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.$set(this.data[params.index], 'loading', true)
-                                            return this.DELETE_CONFIG([params.row.id]).then(({data}) => {
-                                                const { code, msg } = data
-                                                if (code === 0) {
-                                                    this.$Notice.success({
-                                                        title: '成功',
-                                                        desc: '已删除！'
+                                            this.$Modal.confirm({
+                                                title: '提示',
+                                                content: `您正在删除参数 ${params.row.paramKey}, 确认删除吗？`,
+                                                onOk: () => {
+                                                    this.$set(this.data[params.index], 'loading', true)
+                                                    return this.DELETE_CONFIG([params.row.id]).then(({data}) => {
+                                                        const { code, msg } = data
+                                                        if (code === 0) {
+                                                            this.$Notice.success({
+                                                                title: '成功',
+                                                                desc: '已删除！'
+                                                            })
+                                                            return this.getConfigList()
+                                                        }
+                                                        this.$Notice.error({
+                                                            title: '错误',
+                                                            desc: msg
+                                                        })
+                                                        this.data[params.index].loading = false
                                                     })
-                                                    return this.getConfigList()
                                                 }
-                                                this.$Notice.error({
-                                                    title: '错误',
-                                                    desc: msg
-                                                })
-                                                this.data[params.index].loading = false
                                             })
                                         }
                                     }
@@ -194,21 +200,26 @@
             deleteMany() {
                 const deletes = this.tableSelection.map(k => k.id)
                 if (deletes.length > 0) {
-                    return this.DELETE_CONFIG(deletes).then(({data}) => {
-                        const { code, msg } = data
-                        if (code === 0) {
-                            this.$Notice.success({
-                                title: '成功',
-                                desc: '批量删除成功！'
+                    return this.$Modal.confirm({
+                        title: '提示',
+                        content: `您正在删除参数 ${this.tableSelection.map(k => `<b>${k.paramKey}</b>`).join('，')}, 确认删除吗？`,
+                        onOk: () => {
+                            return this.DELETE_CONFIG(deletes).then(({data}) => {
+                                const { code, msg } = data
+                                if (code === 0) {
+                                    this.$Notice.success({
+                                        title: '成功',
+                                        desc: '批量删除成功！'
+                                    })
+                                    return this.getConfigList()
+                                }
+                                this.$Notice.error({
+                                    title: '错误',
+                                    desc: msg
+                                })
                             })
-                            return this.getConfigList()
                         }
-                        this.$Notice.error({
-                            title: '错误',
-                            desc: msg
-                        })
                     })
-                
                 }
                 this.$Notice.error({
                     title: '没有选择数据'

@@ -11,7 +11,7 @@
             </Checkbox>
         </div>
         <Checkbox
-            v-else
+            v-else-if="value.type !== -1"
             style="margin-right:15px;" 
             v-model="value.selected"
             :disabled="disabled"

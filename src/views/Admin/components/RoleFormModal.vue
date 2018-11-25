@@ -30,7 +30,11 @@
                 </i-switch>
             </FormItem>
             <FormItem label="授权">
-               <RoleAuthorization :value="menuList[0]" />
+               <RoleAuthorization :value="{
+                   type: -1,
+                   selected: true,
+                   children: menuList
+               }" />
             </FormItem>
             
         </Form>

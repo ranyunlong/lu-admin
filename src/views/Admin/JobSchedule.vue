@@ -12,7 +12,7 @@
             <div>
                 <Button type="primary" @click="handleAction(null, SCHEDULE_RUN)">批量立即运行</Button>
                 <Button type="success"  @click="handleAction(null, SCHEDULE_RESUME)">批量恢复</Button>
-                <Button type="error"  @click="handleAction(null, DELETE_SCHEDULE)">批量删除</Button>
+                <Button type="error"  @click="deleteMany">批量删除</Button>
                 <Button type="warning"  @click="handleAction(null, SCHEDULE_PAUSE)">批量停止</Button>
             </div>
             <Page :page-size-opts="[5, 10]"  @on-page-size-change="e => limit = e" :total="totalCount" :current.sync="currPage" size="small" show-elevator show-sizer />
@@ -146,13 +146,19 @@
                                         })
                                     },
                                     delete:() => {
-                                        this.data[params.index].state.delete = true
-                                        this.handleAction(params.row.jobId, this.DELETE_SCHEDULE, ()=> {
-                                            this.data[params.index].state.delete = false
-                                            this.$Notice.success({
-                                                title: '成功',
-                                                desc: '删除成功！'
-                                            })
+                                        this.$Modal.confirm({
+                                            title: '提示',
+                                            content: `您正在删除任务，<b>${params.row.beanName}</b>, 确认删除吗？`,
+                                            onOk: () => {
+                                                this.data[params.index].state.delete = true
+                                                this.handleAction(params.row.jobId, this.DELETE_SCHEDULE, ()=> {
+                                                    this.data[params.index].state.delete = false
+                                                    this.$Notice.success({
+                                                        title: '成功',
+                                                        desc: '删除成功！'
+                                                    })
+                                                })
+                                            }
                                         })
                                     }
                                 }
@@ -279,6 +285,19 @@
                         })
                     }
                 })
+            },
+            deleteMany() {
+                const deletes = this.tableSelection.map(k => `<b>${k.beanName}</b>`)
+                if (deletes.length > 0) {
+                    return this.$Modal.confirm({
+                        title: '提示',
+                        content: `您正在删除任务${deletes.join('，')}，确认删除吗？`,
+                        onOk: () => {
+                            this.handleAction(null, this.DELETE_SCHEDULE)
+                        }
+                    })
+                }
+                this.handleAction(null, this.DELETE_SCHEDULE)
             },
             // 获取表格数据列表
             getScheduleList() {
