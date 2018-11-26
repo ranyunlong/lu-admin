@@ -36,6 +36,25 @@ export const adminModules = [{
   id: 7,
   name: '上传管理模块',
   component: $import('Admin/Oss')
+}, {
+  id: 8,
+  name: '微信公司管理模块',
+  component: $import('Admin/WxCompany')
+},
+{
+  id: 9,
+  name: '微信企业家管理模块',
+  component: $import('Admin/WxEntrepreneur')
+},
+{
+  id: 10,
+  name: '微信行业管理模块',
+  component: $import('Admin/WxIndustry')
+},
+{
+  id: 11,
+  name: '微信职业管理模块',
+  component: $import('Admin/WxCareer')
 }]
 
 // 路由是否准备好
@@ -82,7 +101,7 @@ const router = new Router({
     ...mainRoutes,
     {
       path: '/404.html',
-      name: '404',
+      name: 'NotFound',
       component: $import('NotFound'),
     }
   ]
@@ -108,12 +127,14 @@ function getMenuList(callback) {
       })
       router.addRoutes([adminRoutes, {
         path: '*',
-        redirect: { name: '404' }
+        redirect: { name: 'NotFound' }
       }])
       if (typeof callback === 'function') callback()
     }
   })
 }
+
+getMenuList()
 
 
 router.beforeEach((to, from, next) => {

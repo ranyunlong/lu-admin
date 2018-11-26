@@ -231,6 +231,12 @@
             }
         },
         watch: {
+            limit() {
+                this.getOssList()
+            },
+            currPage() {
+                this.getOssList()
+            },
             showModal(v) {
                 if (v) this.GET_OSS_CONFIG().then(({data}) => {
                     const { code, msg, config = {} } = data

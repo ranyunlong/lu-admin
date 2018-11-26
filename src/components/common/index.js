@@ -2,12 +2,13 @@ import Avatar from './Avatar'
 import IconSelect from './IconSelect'
 import ContextMenu from './ContextMenu'
 import ContextMenuItem from './ContextMenuItem'
-
+import UploadPic from './UploadPic'
 const components = {
     Avatar,
-    IconSelect,
     ContextMenu,
-    ContextMenuItem
+    ContextMenuItem,
+    UploadPic,
+    IconSelect
 }
 export default {
     install(Vue) {

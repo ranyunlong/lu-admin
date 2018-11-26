@@ -233,6 +233,8 @@ export default {
         .content {
             display: flex;
             flex-direction: column;
+            min-height: 600px;
+            overflow: hidden;
             .tab {
                 padding: 10px 15px 0 15px;
                 background: #363e4f;
@@ -241,6 +243,8 @@ export default {
             }
             .route-view {
                 flex: 1;
+                min-height: 570px;
+                overflow: hidden;
                 background: #fff;
                 margin: 15px;
                 border: 1px solid #f1f1f1;
