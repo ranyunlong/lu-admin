@@ -66,7 +66,9 @@ export default {
                     const menu = menus.filter((k) => k.parentId === 0)
                     function deep(arr) {
                         if (!Array.isArray(arr)) return;
-                        arr.forEach((k) => {
+                        arr.sort(function(a, b) {
+                            return a.orderNum - b.orderNum
+                        }).forEach((k) => {
                             k.children = menus.filter(v => v.parentId === k.menuId)
                             deep(k.children)
                         })

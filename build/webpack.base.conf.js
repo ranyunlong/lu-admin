@@ -20,14 +20,14 @@ module.exports = {
       : config.dev.assetsPublicPath
   },
   externals: {
-    'vue': 'Vue',
-    'iview': 'iview',
-    'vue-router': 'VueRouter',
-    'vuex': 'Vuex',
-    'three': 'THREE'
+    // 'vue': 'Vue',
+    // 'iview': 'iview',
+    // 'vue-router': 'VueRouter',
+    // 'vuex': 'Vuex',
+    // 'three': 'THREE'
   },
   resolve: {
-    extensions: ['.js', '.vue', '.json'],
+    extensions: ['.js', '.vue', '.jsx', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
@@ -41,7 +41,7 @@ module.exports = {
         options: vueLoaderConfig
       },
       {
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
         loader: 'babel-loader',
         include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')]
       },

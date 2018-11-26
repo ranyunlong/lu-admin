@@ -85,9 +85,9 @@ const mainRoutes = [
   meta: {
     auth_login: true
   },
+  redirect: '/admin/welcome',
   children: [{
-    path: '/',
-    name: 'Admin',
+    path: 'welcome',
     meta: {
       auth_login: true
     },

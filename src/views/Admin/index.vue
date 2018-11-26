@@ -1,31 +1,17 @@
 <template>
     <Layout class="layout">
-        <MHeader v-model="isFold" @changePassword="showChangePasswordModal = true">
-        </MHeader>
+        <MainHeader v-model="isFold" @changePassword="showChangePasswordModal = true" />
         <Layout>
             <Sider 
                 v-model="isFold"
                 collapsible>
-                 <Menu class="menu" @on-select="selectMenu" ref="menu" accordion theme="dark" width="auto" :open-names="menuOpenNames" :active-name="menuActiveName">
-                     <Menu-Item to="/admin" name="home">
-                        <Icon type="md-home" />
-                        <span v-show="!isFold">首页</span>
-                    </Menu-Item>
-                    <Submenu v-for="item in menuList" :key="item.menuId" v-if="item.type === 0" :name="item.menuId">
-                        <span slot="title" :title="item.name">
-                            <Icon :type="item.icon" :title="item.name" />
-                            <span v-show="!isFold">{{item.name}}</span>
-                        </span>
-                        <Menu-Item :title="child.name" :to="child.url" v-for="child in item.children" v-if="child.type === 1" :key="child.menuId" :name="child.menuId">
-                            <Icon :type="child.icon" :title="child.name" />
-                            <span v-show="!isFold">{{child.name}}</span>
-                        </Menu-Item>
-                    </Submenu>
-                    <Menu-Item :title="item.name" :to="item.url" v-for="item in menuList" :key="item.menuId" v-if="item.type === 1" :name="item.menuId">
-                        <Icon :type="item.icon" :title="item.name" />
-                        <span v-show="!isFold">{{item.name}}</span>
-                    </Menu-Item>
-                </Menu>
+                <MainMenu
+                    :is-fold="isFold"
+                    :list="menuList"
+                    :open-names="menuOpenNames"
+                    :active-name="menuActiveName"
+                    @select-menu="selectMenu"
+                    />
             </Sider>
             <Content class="content">
                 <a ref="tab-bar" href="javascript:void(0)" tabindex="99" style="position: relative; display:block;" @blur.stop="contextMenuShow=false" @contextmenu.stop.prevent="contextmenu">
@@ -57,9 +43,10 @@
 </template>
 
 <script>
-import MHeader from './components/Header'
+import MainHeader from './components/Header'
 import ChangePasswordModal from './components/ChangePasswordModal'
 import { createNamespacedHelpers } from 'vuex'
+import MainMenu from './components/MainMenu'
 const system = createNamespacedHelpers('system')
 export default {
     data() {
@@ -67,7 +54,7 @@ export default {
             isFold: false,                      // 菜单是否展开
             tabTags: [],                        // tab 已打开列表
             tabActiveName: '',                  // tab 选项卡 激活名称
-            menuActiveName: 'home',             // 菜单激活名称
+            menuActiveName: -1,             // 菜单激活名称
             menuOpenNames: [],                  // 菜单打开的名称列表
             contextMenuShow: false,             // tab 选项卡右键菜单显示状态
             contextMenuX: 0,                    // tab 选项卡右键菜单 X 坐标
@@ -108,14 +95,6 @@ export default {
                 this.tabTags = []
             }
         }
-    },
-    mounted() {
-        // 异步展开菜单
-         this.$refs['menu'].$nextTick(function() {
-            this.$watch('openNames',() => {
-                this.updateOpened() 
-            })
-         })
     },
     methods: {
         ...system.mapActions([
@@ -216,7 +195,8 @@ export default {
         }
     },
     components: {
-        MHeader,
+        MainHeader,
+        MainMenu,
         ChangePasswordModal
     }
 };
