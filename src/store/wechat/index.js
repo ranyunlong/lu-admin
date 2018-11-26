@@ -32,9 +32,9 @@ export default {
             })
         },
         // 更新公司信息
-        WX_COMPANY_UPDATE() {
+        WX_COMPANY_UPDATE({commit}, data = {}) {
             const { comId = 0 , comCompany = '', comLogo = '', comLable = '' } = data
-            return http.post('/wx/wxcompany/save', {
+            return http.post('/wx/wxcompany/update', {
                 comId,
                 comCompany,
                 comLogo,

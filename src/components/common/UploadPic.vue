@@ -31,12 +31,18 @@
                 default() {
                     return ['jpg','jpeg','png']
                 }
-            }
+            },
+            value: String
         },
         data() {
             return {
-                image: '',
+                image: this.value,
                 percent: 0
+            }
+        },
+        watch: {
+            value(v) {
+                this.image = v
             }
         },
         methods: {
@@ -70,6 +76,7 @@
     .upload-view {
         width: 100%;
         height: 100px;
+        padding: 10px;
         .icon {
             display: flex;
             flex-direction: column;
@@ -80,6 +87,7 @@
         }
         img {
             height: 100%;
+            box-sizing: border-box;
         }
     }
 </style>

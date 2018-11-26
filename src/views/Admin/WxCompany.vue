@@ -8,7 +8,7 @@
             <Table @on-selection-change="d => tableSelection = d" highlight-row stripe border size="small" no-data-text="没有相关日志" :columns="columns" :loading="loading" :data="data"></Table>
         </div>
         <div class="bottom-bar">
-            <div></div>
+            <Button type="error" @click="deleteMany">批量删除</Button>
             <Page :page-size-opts="[5, 10]"  @on-page-size-change="e => limit = e" :total="totalCount" :current.sync="currPage" size="small" show-elevator show-sizer />
         </div>
         <Modal
@@ -85,25 +85,44 @@
                         title: '公司名称',
                         key: 'comCompany',
                         align: 'center',
-                        tooltip: true,
                         sortable: true
                     },
                     {
-                        title: '公司logo',
+                        title: 'LOGO',
                         key: 'comLogo',
                         align: 'center',
+                        width: 80,
                         render: (h, params) => {
-                            if (params.row.comLogo) {
-                                return h('img', {
-                                    domProps: {
-                                        src: params.row.comLogo
-                                    },
-                                    style: {
-                                        height: '20px',
-                                        display: 'block'
+                            return h('Poptip', {
+                                props: {
+                                    placement: 'top-start',
+                                    content: '查看大图',
+                                    width: 150,
+                                    transfer: true,
+                                    trigger: "hover"
+                                }
+                            }, [
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small',
+                                        shape: 'circle',
+                                        icon: 'ios-eye'
                                     }
-                                })
-                            }
+                                }),
+                                h('div', {
+                                    slot: 'content'
+                                },[
+                                    h('img', {
+                                        domProps: {
+                                            src: params.row.comLogo
+                                        },
+                                        style: {
+                                            width: '100%'
+                                        }
+                                    })
+                                ])
+                            ])
                         }
                     },
                     {
@@ -125,12 +144,52 @@
                                     },
                                     style: {
                                         marginRight: '8px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.modalTitle = '修改公司'
+                                            this.showModal = true
+                                            this.actionType = 'edit'
+                                            const { comId, comCompany, comLogo, comLable  } = params.row
+                                            this.form = {
+                                                comId,
+                                                comCompany,
+                                                comLogo,
+                                                comLable
+                                            }
+                                        }
                                     }
                                 },'修改'),
                                 h('Button', {
                                     props: {
                                         type: 'error',
                                         size: 'small'
+                                    },
+                                    on: {
+                                        click:() => {
+                                            this.$Modal.confirm({
+                                                title: '提示',
+                                                loading: true,
+                                                content: `您正在删除公司<b>${params.row.comCompany}</b>, 确认删除吗？`,
+                                                onOk: () => {
+                                                    this.WX_COMPANY_DELETE([params.row.comId]).then(({data}) => {
+                                                        const { code, msg } = data
+                                                        this.$Modal.remove()
+                                                        if (code === 0) {
+                                                            this.$Notice.success({
+                                                                title: '成功',
+                                                                desc: `公司<b>${params.row.comCompany}</b>,已删除！`
+                                                            })
+                                                            return this.getList()
+                                                        }
+                                                        this.$Notice.error({
+                                                            title: '失败',
+                                                            desc: msg
+                                                        })
+                                                    })
+                                                }
+                                           })
+                                        }
                                     }
                                 },'删除')
                             ])
@@ -168,29 +227,78 @@
                 })
             },
             handlerOk() {
-                this.modalLoading = true
-                this.WX_COMPANY_ADD(JSON.parse(JSON.stringify(this.form))).then(({data})=> {
-                    const { code, msg } = data
-                    if (code === 0) {
-                        this.$Notice.success({
-                            title: '成功',
-                            desc: '已添加，相关公司信息!'
-                        })
-                    } else {
-                        this.$Notice.error({
-                            title: '错误',
-                            desc: msg
+                this.$refs['iForm'].validate((valid) => {
+                    if (valid) {
+                        if (this.actionType === 'add') {
+                            this.modalLoading = true
+                            this.WX_COMPANY_ADD(JSON.parse(JSON.stringify(this.form))).then(({data})=> {
+                                const { code, msg } = data
+                                if (code === 0) {
+                                    this.$Notice.success({
+                                        title: '成功',
+                                        desc: '已添加相关公司信息!'
+                                    })
+                                } else {
+                                    this.$Notice.error({
+                                        title: '错误',
+                                        desc: msg
+                                    })
+                                }
+                                this.modalLoading = false
+                                this.showModal = false
+                                this.getList()
+                            })
+                        } else if (this.actionType === 'edit') {
+                            this.modalLoading = true
+                            this.WX_COMPANY_UPDATE(JSON.parse(JSON.stringify(this.form))).then(({data})=> {
+                                const { code, msg } = data
+                                if (code === 0) {
+                                    this.$Notice.success({
+                                        title: '成功',
+                                        desc: '已更新相关公司信息!'
+                                    })
+                                } else {
+                                    this.$Notice.error({
+                                        title: '错误',
+                                        desc: msg
+                                    })
+                                }
+                                this.modalLoading = false
+                                this.showModal = false
+                                this.getList()
+                            })
+                        }
+                    }
+                })
+                
+            },
+            deleteMany() {
+                const deletes = this.tableSelection.map(k => k.comId)
+                if (deletes.length === 0) return this.$Notice.error({
+                    title: '错误',
+                    desc: '请选择要删除的公司!'
+                })
+                this.$Modal.confirm({
+                    title: '提示',
+                    content: `您正在删除公司 ${this.tableSelection.map(k => `<b>${k.comCompany}</b>`).join('，')} 确认删除吗？`,
+                    loading: true,
+                    onOk:() => {
+                        this.WX_COMPANY_DELETE(deletes).then(({data}) => {
+                            const { code, msg } = data
+                            if (code === 0) {
+                                this.$Modal.remove()
+                                this.$Notice.success({
+                                    title: '成功',
+                                    desc: `公司 ${this.tableSelection.map(k => `<b>${k.comCompany}</b>`).join('，')} 已删除！`
+                                })
+                                return this.getList()
+                            }
+                            this.$Notice.error({
+                                title: '失败',
+                                desc: msg
+                            })
                         })
                     }
-                    this.modalLoading = false
-                    this.form = {
-                        comId: 0,
-                        comCompany: '',
-                        comLogo: '',
-                        comLable: ''
-                    }
-                    this.showModal = false
-                    this.getList()
                 })
             }
         },
@@ -204,6 +312,16 @@
             search() {
                 this.currPage = 1
                 this.getList()
+            },
+            showModal(v) {
+                if (!v) {
+                    this.form = {
+                        comId: 0,
+                        comCompany: '',
+                        comLogo: '',
+                        comLable: ''
+                    }
+                }
             }
         }
     }
