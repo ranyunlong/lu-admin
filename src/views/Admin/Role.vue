@@ -35,7 +35,6 @@
                 limit: 10,                      // 查询条数限制
                 totalCount: 0,                  // 后台数据总数
                 currPage: 1,                    // 当前页码
-                deleteLoadingState: false,      // 删除按钮状态
                 modalDefaultData: {},           // 模态框的默认数据
                 modalTitle: '',                 // 模态框标题
                 tableSelection: [],             // 表格多选数据
@@ -101,19 +100,18 @@
                                             this.$Modal.confirm({
                                                 title: '提示',
                                                 content: `您正在删除角色 ${params.row.roleName}, 确认删除吗？`,
+                                                loading: true,
                                                 onOk: () => {
-                                                    this.$set(this.data[params.index], 'loading', true)
                                                     this.DELETE_ROLE([params.row.roleId]).then(({data}) => {
+                                                        this.$Modal.remove()
                                                         const { code, msg} = data
                                                         if (code === 0) {
-                                                            this.data[params.index].loading = false
                                                             this.$Notice.warning({
                                                                 title: '成功',
-                                                                desc: params.row.roleName + '已删除!'
+                                                                desc: `角色 ${params.row.roleName} 已删除!`
                                                             })
                                                             this.getRoleList()
                                                         } else {
-                                                            this.data[params.index].loading = false
                                                             this.$Notice.error({
                                                                 title: '错误',
                                                                 desc: msg
@@ -182,20 +180,19 @@
                  this.$Modal.confirm({
                     title: '提示',
                     content: `您正在删除角色 ${this.tableSelection.map(k => `<b>${k.roleName}</b>`).join('，')}, 确认删除吗？`,
+                    loading: true,
                     onOk: () => {
-                        this.deleteLoadingState = true
                         const deletes = this.tableSelection.map(k => k.roleId)
                         this.DELETE_ROLE(deletes).then(({data}) => {
+                            this.$Modal.remove()
                             const { code, msg} = data
                             if (code === 0) {
-                                this.deleteLoadingState = true
                                 this.$Notice.warning({
                                     title: '成功',
                                     desc: '批量删除成功!'
                                 })
                                 this.getRoleList()
                             } else {
-                                this.deleteLoadingState = true
                                 this.$Notice.error({
                                     title: '错误',
                                     desc: msg
