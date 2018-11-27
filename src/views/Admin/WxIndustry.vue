@@ -193,6 +193,7 @@
                                     title: '成功',
                                     desc: `行业 ${this.tableSelection.map(k => `<b>${k.iiIndustryName}</b>`).join('，')} 已删除！`
                                 })
+                                this.tableSelection = []
                                 return this.getList()
                             }
                             this.$Notice.error({

@@ -207,6 +207,7 @@
                                     title: '成功',
                                     desc: `企业家 ${this.tableSelection.map(k => `<b>${k.eentrepreneur}</b>`).join('，')} 已删除！`
                                 })
+                                this.tableSelection = []
                                 return this.getList()
                             }
                             this.$Notice.error({

@@ -192,6 +192,7 @@
                                     desc: '批量删除成功!'
                                 })
                                 this.getRoleList()
+                                this.tableSelection = []
                             } else {
                                 this.$Notice.error({
                                     title: '错误',

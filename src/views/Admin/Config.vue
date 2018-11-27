@@ -105,9 +105,10 @@
                                             this.$Modal.confirm({
                                                 title: '提示',
                                                 content: `您正在删除参数 ${params.row.paramKey}, 确认删除吗？`,
+                                                loading: true,
                                                 onOk: () => {
-                                                    this.$set(this.data[params.index], 'loading', true)
                                                     return this.DELETE_CONFIG([params.row.id]).then(({data}) => {
+                                                        this.$Modal.remove()
                                                         const { code, msg } = data
                                                         if (code === 0) {
                                                             this.$Notice.success({
@@ -120,7 +121,6 @@
                                                             title: '错误',
                                                             desc: msg
                                                         })
-                                                        this.data[params.index].loading = false
                                                     })
                                                 }
                                             })
@@ -203,14 +203,17 @@
                     return this.$Modal.confirm({
                         title: '提示',
                         content: `您正在删除参数 ${this.tableSelection.map(k => `<b>${k.paramKey}</b>`).join('，')}, 确认删除吗？`,
+                        loading: true,
                         onOk: () => {
                             return this.DELETE_CONFIG(deletes).then(({data}) => {
+                                this.$Modal.remove()
                                 const { code, msg } = data
                                 if (code === 0) {
                                     this.$Notice.success({
                                         title: '成功',
                                         desc: '批量删除成功！'
                                     })
+                                    this.tableSelection = []
                                     return this.getConfigList()
                                 }
                                 this.$Notice.error({

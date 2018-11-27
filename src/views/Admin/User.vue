@@ -306,6 +306,7 @@
                                     desc: '批量删除操作成功！'
                                 })
                                 this.getAdminList()
+                                this.tableSelection = []
                             } else {
                                 this.$Notice.error({
                                     title: '错误',

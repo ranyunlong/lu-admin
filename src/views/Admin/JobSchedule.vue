@@ -255,6 +255,7 @@
                     const { code, msg } = data
                     if (code === 0) {
                         this.getScheduleList()
+                        this.tableSelection = []
                         if (typeof callback === 'function') {
                             callback()
                         } else {

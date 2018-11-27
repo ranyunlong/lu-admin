@@ -338,6 +338,7 @@
                         content: `您正在批量删除文件,确认删除吗？`,
                         loading: true,
                         onOk: () => {
+                            this.$Modal.remove()
                             this.OSS_DELETE(deletes).then(({data})=> {
                                 const { code, msg } = data
                                 if (code === 0) {
@@ -346,9 +347,8 @@
                                         desc: `已删除!`
                                     })
                                     this.getOssList()
-                                    return this.$Modal.remove()
+                                    return this.tableSelection = []
                                 }
-                                this.$Modal.remove()
                                 return this.$Notice.error({
                                     title: '错误',
                                     desc: msg
