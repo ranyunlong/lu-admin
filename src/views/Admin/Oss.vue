@@ -181,6 +181,27 @@
                         sortable: true
                     },
                     {
+                        title: '图片名称',
+                        key: 'name',
+                        tooltip: true,
+                        align: 'center',
+                        sortable: true
+                    },
+                    {
+                        title: '类型',
+                        key: 'type',
+                        tooltip: true,
+                        align: 'center',
+                        sortable: true
+                    },
+                    {
+                        title: 'md5',
+                        key: 'md5',
+                        tooltip: true,
+                        align: 'center',
+                        sortable: true
+                    },
+                    {
                         title: '创建时间',
                         key: 'createDate',
                         align: 'center',
@@ -301,7 +322,7 @@
                 }
                 this.$Notice.success({
                     title: '成功',
-                    desc: '文件已上传！'
+                    desc: '文件已上传，如果上传的文件服务器上已存在，列表中不会添加该文件！'
                 })
                 this.getOssList()
             },

@@ -16,7 +16,7 @@
                 <Icon size="35" type="ios-image" />
                 <span>上传logo</span>
             </div>
-            <img v-else :src="image">
+            <img v-else :src="url">
         </div>
     </Upload>
 </template>
@@ -67,7 +67,13 @@
         computed: {
             ...system.mapGetters([
                 'user'
-            ])
+            ]),
+            url() {
+                if (/^\/renren-fast/.test(this.image)) {
+                    return  this.image.replace(/^\/renren-fast/, '/api') + '&token=' + this.user.token
+                }
+                return this.image
+            }
         }
     }
 </script>
