@@ -93,7 +93,7 @@ export default {
             const { page = 1, limit = 10, sidx = 'ii_id', order = 'desc', iiIndustryName = '' } = params
             return http.get('/wx/wxideaindustry/list', {
                 params: {
-                    page, limit, sid ,order, iiIndustryName
+                    page, limit, sidx ,order, iiIndustryName
                 }
             })
         },
@@ -126,7 +126,7 @@ export default {
             const { page = 1, limit = 10, sidx = 'IC_ID', order = 'desc', icCareerName = '' } = params
             return http.get('/wx/wxideacareer/list', {
                 params: {
-                    page, limit, sid ,order, icCareerName
+                    page, limit, sidx ,order, icCareerName
                 }
             })
         },

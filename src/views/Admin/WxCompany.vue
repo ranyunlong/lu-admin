@@ -43,6 +43,7 @@
 
 <script>
     import { createNamespacedHelpers } from 'vuex'
+    const system = createNamespacedHelpers('system')
     const wechat = createNamespacedHelpers('wechat')
     export default {
         data() {
@@ -93,6 +94,10 @@
                         align: 'center',
                         width: 80,
                         render: (h, params) => {
+                            let url = params.row.comLogo
+                            if (/^\/renren-fast/.test(url)) {
+                                url = url.replace(/^\/renren-fast/, '/api') + '&token=' + this.user.token
+                            }
                             return h('Poptip', {
                                 props: {
                                     placement: 'top-start',
@@ -115,7 +120,7 @@
                                 },[
                                     h('img', {
                                         domProps: {
-                                            src: params.row.comLogo
+                                            src: url
                                         },
                                         style: {
                                             width: '100%'
@@ -200,6 +205,11 @@
         },
         created() {
             this.getList()
+        },
+        computed: {
+            ...system.mapGetters([
+                'user'
+            ])
         },
         methods: {
             ...wechat.mapActions([
