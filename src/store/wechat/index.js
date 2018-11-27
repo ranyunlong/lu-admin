@@ -47,10 +47,10 @@ export default {
         },
         // 企业家信息列表
         WX_ENTREPRENEUR_LIST({commit}, params = {}) {
-            const { page = 1, limit = 10, sid = 'E_ID', order = 'desc', eName = '' } = params
+            const { page = 1, limit = 10, sidx = 'E_ID', order = 'desc', eName = '' } = params
             return http.get('/wx/wxentrepreneur/list', {
                 params: {
-                    page, limit, sid, order, eName
+                    page, limit, sidx, order, eName
                 }
             })
         },
@@ -90,7 +90,7 @@ export default {
         },
         // 行业信息列表
         WX_INDUSTRY_LIST({commit}, params = {}) {
-            const { page = 1, limit = 10, sid = 'E_ID', order = 'desc', iiIndustryName = '' } = params
+            const { page = 1, limit = 10, sidx = 'ii_id', order = 'desc', iiIndustryName = '' } = params
             return http.get('/wx/wxideaindustry/list', {
                 params: {
                     page, limit, sid ,order, iiIndustryName
@@ -123,7 +123,7 @@ export default {
         },
         // 职业信息列表
         WX_CAREER_LIST({commit}, params = {}) {
-            const { page = 1, limit = 10, sid = 'E_ID', order = 'desc', icCareerName = '' } = params
+            const { page = 1, limit = 10, sidx = 'IC_ID', order = 'desc', icCareerName = '' } = params
             return http.get('/wx/wxideacareer/list', {
                 params: {
                     page, limit, sid ,order, icCareerName
