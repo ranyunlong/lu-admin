@@ -56,20 +56,18 @@
                             this.$Modal.confirm({
                                 title: '提示',
                                 content: `您正在删除菜单，<b>${data.name}</b>，确认删除吗？`,
+                                loading: true,
                                 onOk: () => {
-                                    this.$set(data, 'delLaoding', true)
-                                    const d = data
                                     this.DELETE_MENU(data.menuId).then(({data}) => {
+                                        this.$Modal.remove()
                                         const { code, msg } = data
                                         if (code === 0) {
-                                            d.delLaoding = false
                                             this.$Notice.success({
                                                 title: '成功',
                                                 desc: '删除成功!'
                                             })
                                             this.GET_MENU_LIST()
                                         } else {
-                                            d.delLaoding = false
                                             this.$Notice.error({
                                                 title: '错误',
                                                 desc: msg
