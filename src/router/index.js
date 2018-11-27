@@ -120,7 +120,7 @@ function getMenuList(callback) {
               meta: {
                 auth_login: true
               },
-              component: iModule ? iModule.component : $import('NotFound')
+              component: iModule ? iModule.component : $import('Development')
             })
           }
         }
