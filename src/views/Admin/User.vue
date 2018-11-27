@@ -142,19 +142,18 @@
                                             this.$Modal.confirm({
                                                 title: '提示',
                                                 content: `您正在删除管理员 <b>${params.row.username}</b> , 是否确认删除？`,
+                                                loading: true,
                                                 onOk: () => {
-                                                    this.$set(this.data[params.index], 'loading', true)
                                                     this.DELETE_ADMIN([params.row.userId]).then(({data}) => {
+                                                        this.$Modal.remove()
                                                         const { code, msg} = data
                                                         if (code === 0) {
-                                                            this.data[params.index].loading = false
                                                             this.$Notice.success({
                                                                 title: '成功',
                                                                 desc: `管理员 ${params.row.username} 已删除!`
                                                             })
                                                             this.getAdminList()
                                                         } else {
-                                                            this.data[params.index].loading = false
                                                             this.$Notice.error({
                                                                 title: '错误',
                                                                 desc: msg
@@ -191,7 +190,6 @@
                 limit: 10,                      // 查询条数限制
                 username: '',                   // 搜索框值
                 modalTitle: '添加管理员',        // 模态框标题
-                deleteLoadingState: false       // 删除按钮状态
             }
         },
         created() {
@@ -297,9 +295,10 @@
                 this.$Modal.confirm({
                     title: '提示',
                     content: `您正在删除管理员 ${this.tableSelection.map(k => `<b>${k.username}</b>`).join('，')}, 确认删除吗？`,
+                    loading: true,
                     onOk: () => {
-                        this.deleteLoadingState = true
                         this.DELETE_ADMIN(deletes).then(({data}) => {
+                            this.$Modal.remove()
                             const { code, message} = data
                             if(code === 0) {
                                 this.$Notice.success({
@@ -307,9 +306,7 @@
                                     desc: '批量删除操作成功！'
                                 })
                                 this.getAdminList()
-                                this.deleteLoadingState = false
                             } else {
-                                this.deleteLoadingState = false
                                 this.$Notice.error({
                                     title: '错误',
                                     desc: '批量删除操作失败！'
