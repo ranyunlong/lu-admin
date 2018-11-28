@@ -14,7 +14,7 @@
         <div class="upload-view">
             <div v-if="!image" class="icon">
                 <Icon size="35" type="ios-image" />
-                <span>上传logo</span>
+                <span>上传图片</span>
             </div>
             <img v-else :src="url">
         </div>
@@ -70,7 +70,11 @@
             ]),
             url() {
                 if (/^\/renren-fast/.test(this.image)) {
-                    return  this.image.replace(/^\/renren-fast/, '/api') + '&token=' + this.user.token
+                    return this.image.replace(/^\/renren-fast/, '/api') + '&token=' + this.user.token
+                }
+                // 本地图片加 token 访问
+                if (RegExp(location.host).test(this.image)) {
+                    return this.image + '&token=' + this.user.token
                 }
                 return this.image
             }

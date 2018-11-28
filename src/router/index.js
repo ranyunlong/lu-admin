@@ -38,23 +38,33 @@ export const adminModules = [{
   component: $import('Admin/Oss')
 }, {
   id: 8,
-  name: '微信公司管理模块',
-  component: $import('Admin/WxCompany')
+  name: '公司管理模块',
+  component: $import('Admin/Company')
 },
 {
   id: 9,
-  name: '微信企业家管理模块',
-  component: $import('Admin/WxEntrepreneur')
+  name: '企业家管理模块',
+  component: $import('Admin/Entrepreneur')
 },
 {
   id: 10,
-  name: '微信行业管理模块',
-  component: $import('Admin/WxIndustry')
+  name: '行业管理模块',
+  component: $import('Admin/Industry')
 },
 {
   id: 11,
-  name: '微信职业管理模块',
-  component: $import('Admin/WxCareer')
+  name: '职业管理模块',
+  component: $import('Admin/Career')
+},
+{
+  id: 12,
+  name: '二维码管理模块',
+  component: $import('Admin/Qrcode')
+},
+{
+  id: 13,
+  name: '考场管理模块',
+  component: $import('Admin/Exam')
 }]
 
 // 路由是否准备好
